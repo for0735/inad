@@ -14,21 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
-@RequiredArgsConstructor
 @Controller
-public class MainController {
-    @GetMapping("/")
-    public String main(Model model) {
-    	System.out.println("시작");
-        return "main/index";
-    }
+@RequestMapping(value = "/map")
+public class mapController {
     
-    @ResponseBody
-	@RequestMapping(value = "/index", produces = "application/json; charset=utf8")
-	public String index(@RequestBody Map<String, Object> param) {
+	@RequestMapping("/main")
+	public String main(Model model) {
 		
-    	System.out.println("json테스트");
-    	System.out.println(param);
-		return "iii";
+		return "map/map";
 	}
 }

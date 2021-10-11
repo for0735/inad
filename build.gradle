@@ -7,7 +7,6 @@ plugins {
 
 bootJar {
 	mainClass = 'com.inad.mgr.InadProjApplication'
-	
 }
 
 group = 'com.inad'
