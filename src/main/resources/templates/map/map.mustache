@@ -1,11 +1,254 @@
 {{>main/layout/library}}
+<link rel="stylesheet" href="/css/map.css" type="text/css">
+<header>
+  <div class="logo"><img src="/img/logo.png"></div>
+  <div class="search-container">
+      <input class="search" type="text" placeholder="주소/건물명 입력" name="search" >
+  </div>
+    <a href="#"><img class="search-icon" src="/img/icon.png"></a>
+</header>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ede3a90a2627907627478d4036d6ca65&libraries=services"></script>
-<div id="map" style="width:1250px;height:900px;"></div>
+<div id="map" style="width:100%;height:85%;"></div>
 <div class="hAddr">
     <span class="title">지도중심기준 행정동 주소정보</span>
     <span id="centerAddr"></span>
 </div>
+
+<!-- loading -->
+<div class="loading1">
+<div class="loading2">
+<h1>Loading</h1>
+<!-- 3  -->
+<div class="loader loader--style3" title="2">
+  <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     width="90px" height="90px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+  <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+    <animateTransform attributeType="xml"
+      attributeName="transform"
+      type="rotate"
+      from="0 25 25"
+      to="360 25 25"
+      dur="0.6s"
+      repeatCount="indefinite"/>
+    </path>
+  </svg>
+</div>
+</div>
+</div> <!----- loading end ----->
+
+
+<!-- table 토지-->
+<div class="table-group">
+    <table class="table-title">
+	  <tbody>
+		<tr>
+		  <td class="background-s">추정시세</td>
+          <td>126,000,000 원</td>
+		</tr>
+	  </tbody>
+	</table>
+    
+	<table>
+	  <tbody>
+		<tr>
+		  <td class="background-s">토지가격</td>
+		  <td>33,853,600,000 원</td>
+		  <td class="background-s">건물가격</td>
+          <td>1,763,100,000 원</td>
+		</tr>
+		<tr>
+		  <td class="background-s">토지단가</td>
+		  <td>74,191,000 원<br>개별공시지가대비 257%</td>
+		  <td class="background-s">건물단가</td>
+          <td>655,000 원</td>
+		</tr>
+		<tr>
+		  <td class="background-s">토지면적</td>
+		  <td>456.30 ㎡</td>
+		  <td class="background-s">건물연면적</td>
+          <td>2,6990.22 ㎡</td>
+		</tr>
+        <tr>
+		  <td class="background-s">용도지역</td>
+		  <td>일반상업지역</td>
+		  <td class="background-s">주용도</td>
+          <td>제2종근생활시설</td>
+		</tr>
+        <tr>
+		  <td class="background-s">2021년 공시지가</td>
+		  <td>28,920,000 원</td>
+		  <td class="background-s">사용승인일</td>
+          <td>2003-06-20</td>
+		</tr>
+	  </tbody>
+	</table>
+
+    <h3>유사매매사례</h3>
+	<table class="table">
+	  <thead>
+		<tr>
+		    <th>No</th>
+            <th>유사정도</th>
+            <th>소재지</th>
+            <th>건물명</th>
+            <th>층명</th>
+            <th>전용면적</th>
+            <th>승강기</th>
+            <th>사용승인</th>
+            <th>건물일자</th>
+            <th>거래금액</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <td>1</td>
+		  <td>매우<br>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+		<tr>
+		  <td>2</td>
+		  <td>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+		<tr>
+		  <td>3</td>
+		  <td>매우<br>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+	  </tbody>
+	</table>
+</div> <!----- table-group end ----->
+
+
+<!-- table 집합-->
+<div class="table-group">
+    <table class="table-title">
+	  <tbody>
+		<tr>
+		  <td class="background-s">추정시세</td>
+          <td>126,000,000 원</td>
+		</tr>
+	  </tbody>
+	</table>
+
+	<table class="table">
+	  <tbody>
+		<tr>
+		  <td class="background-s">㎡ 단가</td>
+		  <td>9,052,000 원</td>
+		  <td class="background-s">3.3㎡ 단가</td>
+          <td>29,927,000 원</td>
+		</tr>
+		<tr>
+		  <td class="background-s">전용면적</td>
+		  <td>114.27 ㎡ / 34.57 (3.3㎡)</td>
+		  <td class="background-s">공급면적</td>
+          <td>144.28 ㎡ / 43.65(3.2㎡)</td>
+		</tr>
+		<tr>
+		  <td class="background-s">기준시점</td>
+		  <td>2021-09-24</td>
+		  <td class="background-s">사용승인일</td>
+          <td>2008-04-30</td>
+		</tr>
+        <tr>
+		  <td class="background-s">해당층 / 최고층</td>
+		  <td>7층 / 24</td>
+		  <td class="background-s">세대수</td>
+          <td>718 세대</td>
+		</tr>
+        <tr>
+		  <td class="background-s">동 용도</td>
+		  <td>공동주택</td>
+		  <td class="background-s">호 용도</td>
+          <td>아파트</td>
+		</tr>
+        <tr>
+		  <td class="background-s">구조</td>
+		  <td>철근콘크리트 구조</td>
+		</tr>
+	  </tbody>
+	</table>
+
+    <h3>유사매매사례</h3>
+	<table class="table">
+	  <thead>
+		<tr>
+		    <th>No</th>
+            <th>유사정도</th>
+            <th>소재지</th>
+            <th>건물명</th>
+            <th>층명</th>
+            <th>전용면적</th>
+            <th>승강기</th>
+            <th>사용승인</th>
+            <th>건물일자</th>
+            <th>거래금액</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <td>1</td>
+		  <td>매우<br>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+		<tr>
+		  <td>2</td>
+		  <td>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+		<tr>
+		  <td>3</td>
+		  <td>매우<br>유사</td>
+		  <td>강동구 강동 565-1</td>
+		  <td>리안아파트</td>
+		  <td>16층</td>
+		  <td>59.94</td>
+		  <td>유</td>
+		  <td>1991.09</td>
+		  <td>2003.01</td>
+          <td>79,500만원</td>  
+		</tr>
+	  </tbody>
+	</table>
+</div> <!----- table-group end ----->
+
 
 
 <script>
@@ -50,6 +293,27 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
             infowindow.setContent(content);
             infowindow.open(map, marker);
+            
+            alert(result[0].address.address_name);
+            $.ajax({
+				type: 'POST',
+				url: '/map/search',
+				async : false,
+				data: {"addr": result[0].address.address_name },
+				dataType: 'JSON',
+				success: function(data)
+				{
+					if(data.result == 1){
+						alert("주소반환성공");
+					} else {
+						alert("게시글 등록에 실패하였습니다.");
+					}
+				},
+				error: function(data)
+				{
+					console.log("data : " + data);
+				}
+			});
         }   
     });
 });
