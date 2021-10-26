@@ -3,9 +3,9 @@
 <header>
   <div class="logo"><img src="/img/logo.png"></div>
   <div class="search-container">
-      <input class="search" type="text" placeholder="주소/건물명 입력" name="search" >
+      <input class="search" type="text" placeholder="주소 입력" id="search" name="search" >
   </div>
-    <a href="#"><img class="search-icon" src="/img/icon.png"></a>
+    <a onClick="searchAddr();" href="#"><img class="search-icon" src="/img/icon.png"></a>
 </header>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ede3a90a2627907627478d4036d6ca65&libraries=services"></script>
@@ -253,7 +253,11 @@
 
 <script>
 $(document).ready(function() {
-
+	$("#search").keypress(function (e) {
+		if (e.which == 13){
+        	searchAddr();
+		}
+	});
 });
 
 var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
@@ -276,6 +280,7 @@ searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
 // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+	deleteMark();
     searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
         if (status === kakao.maps.services.Status.OK) {
             var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
@@ -294,7 +299,6 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             infowindow.setContent(content);
             infowindow.open(map, marker);
             
-            alert(result[0].address.address_name);
             $.ajax({
 				type: 'POST',
 				url: '/map/search',
@@ -306,13 +310,13 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 					if(data.result == 1){
 						alert("주소반환성공");
 					} else {
-						alert("게시글 등록에 실패하였습니다.");
+						alert("주소반환실패");
 					}
 				},
-				error: function(data)
+				error:function(request,status,data)
 				{
-					console.log("data : " + data);
-				}
+			         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
+			    }
 			});
         }   
     });
@@ -346,5 +350,73 @@ function displayCenterInfo(result, status) {
             }
         }
     }    
+}
+
+// 주소로 좌표를 검색합니다
+function searchAddr(){
+	deleteMark();
+	
+	var addr = $("#search").val();
+
+	geocoder.addressSearch(addr, function(result, status) {
+	
+	    // 정상적으로 검색이 완료됐으면 
+	     if (status === kakao.maps.services.Status.OK) {
+	
+	        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+	
+	        // 결과값으로 받은 위치를 마커로 표시합니다
+	        marker = new kakao.maps.Marker({
+	            map: map,
+	            position: coords
+	        });
+	
+	        // 인포윈도우로 장소에 대한 설명을 표시합니다
+	        infowindow = new kakao.maps.InfoWindow({
+	            content: '<div style="width:150px;text-align:center;padding:6px 0;">' + addr + '</div>'
+	        });
+	        infowindow.open(map, marker);
+	
+	        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+	        map.setCenter(coords);
+	        
+	        // 주소정보 가져오기
+	        searchDetailAddrFromCoords(coords, function(result, status) {
+		        if (status === kakao.maps.services.Status.OK) {
+		            alert(result[0].address.address_name);
+		            
+		            $.ajax({
+						type: 'POST',
+						url: '/map/search',
+						async : false,
+						data: {"addr": result[0].address.address_name },
+						dataType: 'JSON',
+						success: function(data)
+						{
+							if(data.result == 1){
+								alert("주소반환성공");
+							} else {
+								alert("주소반환실패");
+							}
+						},
+						error:function(request,status,data)
+						{
+					         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
+					    }
+					});
+		        }   
+		    });
+	        
+	    }  else {
+	    	alert("주소를 정확하게 입력해주세요. (시, 군, 구, 동 텍스트 포함)");
+	    }
+	});   
+
+}
+
+// 마커제거
+function deleteMark() {
+	marker.setMap(null);
+	infowindow.setMap(null);
 }
 </script>

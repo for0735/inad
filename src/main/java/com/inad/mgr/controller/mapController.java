@@ -1,24 +1,15 @@
 package com.inad.mgr.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.security.Principal;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(value = "/map")
 public class mapController {
     
+	// 메인
 	@RequestMapping("/main")
 	public String main(Model model) {
 		
@@ -35,8 +27,8 @@ public class mapController {
 	
 
 	// 검색
-	@RequestMapping("/search")
-    public ModelAndView search(HttpServletRequest request, Model model, RedirectAttributes rttr) throws Exception {
+	@RequestMapping(value="/search", method=RequestMethod.POST)
+    public ModelAndView search(HttpServletRequest request, Model model, RedirectAttributes rttr, Principal prin) throws Exception {
 		ModelAndView mv = new ModelAndView("jsonView");
 		
 		int result = 0;
@@ -44,12 +36,12 @@ public class mapController {
 		
 		try {
 			System.out.println(addr);
+			result = 1;
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		
 		mv.addObject("result", result);
-		
 		return mv;
 	}
 }

@@ -21,12 +21,12 @@ mybatis:
     call-setters-on-nulls: true
     jdbc-type-for-null: varchar
     default-fetch-size: 500
-  type-aliases-package: com.hanjulcoding.home
+  type-aliases-package: com.inad.mgr
   mapper-locations:
   - classpath:mybatis/mapper/*.xml
 logging:
   level:
-    com.hanjulcoding.home.domain: TRACE
+    com.inad.mgr.domain: TRACE
 ---
 # local 환경
 spring:
