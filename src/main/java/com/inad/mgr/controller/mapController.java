@@ -3,9 +3,12 @@ package com.inad.mgr.controller;
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.service.MapService;
+
 @Slf4j
 @Controller
 @RequestMapping(value = "/map")
 public class mapController {
+	
+	@Autowired
+	private MapService mapService;
     
 	// 메인
 	@RequestMapping("/main")
@@ -70,6 +79,16 @@ public class mapController {
 			System.out.println(addrArr[i]);
 		}
 		
+		// 여기서부터 계산할것
+		String mapKind = "";
+		String siCode = "";
+		String hangCode = "";
+		
+		siCode = findSiCode(addrArr);
+		mapKind = mapKind(addrArr, siCode);
+		
+		System.out.println("필지가뭔데? " + mapKind);
+		
 		try {
 			System.out.println(addr);
 			result = 1;
@@ -79,5 +98,39 @@ public class mapController {
 		
 		mv.addObject("result", result);
 		return mv;
+	}
+	
+	
+	public String mapKind(String[] argv, String siCode) {
+		String addr = "";
+		for(int i=0; i<argv.length-1; i++) {
+			if(i!=0 || !argv[i].equals("산")) {
+				addr = addr + " ";
+			}
+			
+			if(!argv[i].equals("산")) {
+				addr = addr + argv[i];
+			}
+		}
+		
+		System.out.println("검색주소 + " + addr);
+		
+		return "";
+	}
+	
+	public String findSiCode(String[] argv) throws Exception {
+		String siCode = "";
+		List<CdInfo> cdInfo = new ArrayList<CdInfo>();
+		if(argv.length <= 3 || argv[2].equals("산")) {
+			//세종시 주소일 경우 검색법
+			cdInfo = mapService.getCdInfoSmall(argv);
+		} else {
+			//평소 주소일경우 검색
+			cdInfo = mapService.getCdInfoBig(argv);
+		}
+		siCode = cdInfo.get(0).getSigunguCd();
+		System.out.println("너의 시코드?" + siCode);
+		
+		return siCode;
 	}
 }

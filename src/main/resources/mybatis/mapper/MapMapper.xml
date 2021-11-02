@@ -2,11 +2,23 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ined.mgr.MemberMapper">
+<mapper namespace="com.inad.mgr.mapper.MapMapper">
 
+	<select	id="getCdInfoSmall">
+		SELECT * FROM tb_cdInfo
+		WHERE si LIKE CONCAT({argv[0]},'%')
+		AND (gu1 LIKE CONCAT({argv[1]},'%') OR gu2 LIKE CONCAT({argv[1]},'%'))
+		ORDER BY hangCd DESC
+	</select>
 	
+	<select	id="getCdInfoBig">
+		SELECT * FROM tb_cdInfo
+		WHERE si LIKE CONCAT({argv[0]},'%')
+		AND gun LIKE CONCAT({argv[1]},'%')
+		AND (gu1 LIKE CONCAT({argv[2]},'%') OR gu2 LIKE CONCAT({argv[2]},'%'))
+		ORDER BY hangCd DESC 
+	</select>
 </mapper>
-
 
 
 
