@@ -4,20 +4,37 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inad.mgr.mapper.MapMapper">
 
-	<select	id="getCdInfoSmall">
+	<select	id="getCdInfoSmall" resultType="com.inad.mgr.domain.CdInfo">
 		SELECT * FROM tb_cdInfo
-		WHERE si LIKE CONCAT({argv[0]},'%')
-		AND (gu1 LIKE CONCAT({argv[1]},'%') OR gu2 LIKE CONCAT({argv[1]},'%'))
+		WHERE si LIKE CONCAT(#{array[0]},'%')
+		AND (gu1 LIKE CONCAT(#{array[1]},'%') OR gu2 LIKE CONCAT(#{array[1]},'%'))
 		ORDER BY hangCd DESC
 	</select>
 	
-	<select	id="getCdInfoBig">
+	<select	id="getCdInfoBig" resultType="com.inad.mgr.domain.CdInfo">
 		SELECT * FROM tb_cdInfo
-		WHERE si LIKE CONCAT({argv[0]},'%')
-		AND gun LIKE CONCAT({argv[1]},'%')
-		AND (gu1 LIKE CONCAT({argv[2]},'%') OR gu2 LIKE CONCAT({argv[2]},'%'))
+		WHERE si LIKE CONCAT(#{si},'%')
+		AND gun LIKE CONCAT(#{gun},'%')
+		AND (gu1 LIKE CONCAT(#{gu},'%') OR gu2 LIKE CONCAT(#{gu},'%'))
 		ORDER BY hangCd DESC 
 	</select>
+	
+	<select id="getKind" resultType="com.inad.mgr.domain.BrTitleInfo">
+		SELECT * FROM tb_brTitleInfo
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND sigunguCd = #{siCode}
+		AND bun = #{bun}
+		AND ji = #{ji}
+	</select>
+	
+	<select id="getKindZipHap" resultType="com.inad.mgr.domain.BrExposInfoArea">
+		SELECT * FROM tb_brExposInfoArea
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND sigunguCd = #{siCode}
+		AND bun = #{bun}
+		AND ji = #{ji}
+	</select>
+	
 </mapper>
 
 

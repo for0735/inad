@@ -7,8 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inad.mgr.domain.BrExposInfoArea;
+import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.mapper.MapMapper;
+import com.inad.mgr.util.StringUtil;
 
 @Service
 public class MapServiceImpl implements MapService {
@@ -25,7 +28,64 @@ public class MapServiceImpl implements MapService {
 	@Override
 	public List<CdInfo> getCdInfoBig(String[] argv) throws Exception {
 
-		return mapMapper.getCdInfoBig(argv); 
+		String si = argv[0];
+		String gun = argv[1];
+		String gu = "";
+		
+		if(argv[argv.length-1].equals("산")) {
+			gu = argv[argv.length-3];
+		}else {
+			gu = argv[argv.length-2];
+		}
+		
+		return mapMapper.getCdInfoBig(si, gun, gu); 
+	}
+
+	@Override
+	public List<BrTitleInfo> getKind(String[] argv, CdInfo cdInfo, String addr) throws Exception {
+		
+		StringUtil stringUtil = new StringUtil();
+
+		String siCode = "";
+		String bun = "";
+		String ji = "";
+		
+		siCode = cdInfo.getSigunguCd();
+		String bunJi = argv[argv.length-1];
+		
+		if(bunJi.contains("-")) {
+			String[] temp = bunJi.split("-");
+			bun = stringUtil.getJiBun(temp[0]);
+			ji = stringUtil.getJiBun(temp[1]);
+		} else {
+			bun = stringUtil.getJiBun(bunJi);
+			ji = "0000";
+		}
+		
+		return mapMapper.getKind(addr, siCode, bun, ji);
+	}
+
+	@Override
+	public List<BrExposInfoArea> getKindZipHap(String[] argv, CdInfo cdInfo, String addr) throws Exception {
+		StringUtil stringUtil = new StringUtil();
+
+		String siCode = "";
+		String bun = "";
+		String ji = "";
+		
+		siCode = cdInfo.getSigunguCd();
+		String bunJi = argv[argv.length-1];
+		
+		if(bunJi.contains("-")) {
+			String[] temp = bunJi.split("-");
+			bun = stringUtil.getJiBun(temp[0]);
+			ji = stringUtil.getJiBun(temp[1]);
+		} else {
+			bun = stringUtil.getJiBun(bunJi);
+			ji = "0000";
+		}
+		
+		return mapMapper.getKindZipHap(addr, siCode, bun, ji);
 	}
 	
 }
