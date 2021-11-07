@@ -1,6 +1,7 @@
 package com.inad.mgr.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.mapper.MapMapper;
 import com.inad.mgr.util.StringUtil;
 
@@ -86,6 +88,12 @@ public class MapServiceImpl implements MapService {
 		}
 		
 		return mapMapper.getKindZipHap(addr, siCode, bun, ji);
+	}
+
+	@Override
+	public List<DataApt> getAptPrice(Map addrMap) throws Exception {
+
+		return mapMapper.getAptPrice(addrMap);
 	}
 	
 }

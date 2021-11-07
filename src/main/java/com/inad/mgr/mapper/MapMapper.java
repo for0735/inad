@@ -1,6 +1,7 @@
 package com.inad.mgr.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -8,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataApt;
 
 @Mapper
 public interface MapMapper {
@@ -20,4 +22,6 @@ public interface MapMapper {
 
 	public List<BrExposInfoArea> getKindZipHap(@Param("addr") String addr, @Param("siCode") String siCode, @Param("bun") String bun,
 			@Param("ji") String ji) throws Exception;
+	
+	public List<DataApt> getAptPrice(Map addrMap) throws Exception;
 }

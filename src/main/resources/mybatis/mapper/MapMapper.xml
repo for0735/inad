@@ -35,6 +35,13 @@
 		AND ji = #{ji}
 	</select>
 	
+	<select id="getAptPrice" resultType="com.inad.mgr.domain.data.DataApt" parameterType="hashMap">
+		SELECT * FROM tb_dataApt
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND bun = #{bun}
+		AND ji = #{ji}
+	</select>
+	
 </mapper>
 
 

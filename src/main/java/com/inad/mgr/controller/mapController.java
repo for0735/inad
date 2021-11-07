@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.service.MapService;
 
 @Slf4j
@@ -83,12 +86,38 @@ public class mapController {
 		//================================================================================================
 		
 		// 여기서부터 계산할것 ==================================================================================
-		String mapKind = "";
+		Map addrMap = new HashMap();
 		CdInfo cdInfo = findCdInfo(addrArr);
 		
-		mapKind = mapKind(addrArr, cdInfo);
+		addrMap = mapKind(addrArr, cdInfo);
+		System.out.println("필지가뭔데? " + addrMap.get("mapKind").toString());
 		
-		System.out.println("필지가뭔데? " + mapKind);
+		
+		// 여기서부터 가격산정
+		String price = "";
+		
+		if(addrMap.get("mapKind").toString().equals("0") || addrMap.get("mapKind").toString().equals("98") || addrMap.get("mapKind").toString().equals("99")) {
+			// 비정상 코드
+			mv.addObject("price", price);
+		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
+			System.out.println("첫번째 면적?");
+			System.out.println((List)addrMap.get("brExposInfoAreaList"));
+			List<BrTitleInfo> br = (List)addrMap.get("brExposInfoAreaList");
+			//System.out.println(br.get(0).getTotArea());
+			//price = getAptPrice(addrMap);
+		} else if(addrMap.get("mapKind").toString().equals("4")) { // 오피스텔
+			price = getOfficePrice(addrMap);
+		} else if(addrMap.get("mapKind").toString().equals("3")) { // 연립다세대
+			price = getMultiPrice(addrMap);
+		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
+			price = getLandPrice(addrMap);
+		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
+			price = getAlonePrice(addrMap);
+		} else if(addrMap.get("mapKind").toString().equals("5")) { // 구분상가
+			price = getCommercialPrice(addrMap);
+		}
+		
+		
 		
 		try {
 			System.out.println(addr);
@@ -103,7 +132,8 @@ public class mapController {
 	
 	
 	// 필지종류구하기
-	public String mapKind(String[] argv, CdInfo cdInfo) throws Exception {
+	public Map mapKind(String[] argv, CdInfo cdInfo) throws Exception {
+		
 		/*
 		 * 0 : 토지
 		 * 1 : 토지건물
@@ -117,6 +147,7 @@ public class mapController {
 		
 		List<BrTitleInfo> brTitleInfoList = new ArrayList<BrTitleInfo>();
 		List<BrExposInfoArea> brExposInfoAreaList = new ArrayList<BrExposInfoArea>();
+		Map addrMap = new HashMap();
 		String mapKind = "";
 		String addr = "";
 		
@@ -131,47 +162,76 @@ public class mapController {
 		}
 		
 		System.out.println("검색주소 + " + addr);
+		addrMap.put("cdInfo", cdInfo);
+		addrMap.put("addr", addr);
 
 		// 필지구해와야함...
 		brTitleInfoList = mapService.getKind(argv, cdInfo, addr);
 		if(brTitleInfoList.size() == 0) {
-			mapKind = "0";
+			addrMap.put("mapKind", "0");
 			System.out.println("이거토지임");
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
-			mapKind = "1";
+			addrMap.put("mapKind", "1");
+			addrMap.put("bun", brTitleInfoList.get(0).getBun());
+			addrMap.put("ji", brTitleInfoList.get(0).getJi());
 			System.out.println("이거토지건물임");
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("2")) {
 			//추가로직 동작
 			brExposInfoAreaList = mapService.getKindZipHap(argv, cdInfo, addr);
 			
 			if(brExposInfoAreaList.size() == 0) {
-				mapKind = "98";
+				addrMap.put("mapKind", "98");
 				System.out.println("집합인데 없어서 토지로 판단 가격산정(x)");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("02001")) {
-				mapKind = "2";
+				addrMap.put("mapKind", "2");
+				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
+				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
 				System.out.println("이거아파트임");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("02002") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("02003")
 					|| brExposInfoAreaList.get(0).getMainPurpsCd().equals("02000")) {
-				mapKind = "3";
+				addrMap.put("mapKind", "3");
+				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
+				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
 				System.out.println("이거연립다세대임");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("01000") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("01001")
 					|| brExposInfoAreaList.get(0).getMainPurpsCd().equals("01002") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("01003")) {
-				mapKind = "1";
+				addrMap.put("mapKind", "1");
+				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
+				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
 				System.out.println("이거토지건물인데...?");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("14200") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("14202")) {
-				mapKind = "4";
+				addrMap.put("mapKind", "4");
+				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
+				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
 				System.out.println("이거오피스텔임");
 			} else {
-				mapKind = "5";
+				addrMap.put("mapKind", "5");
+				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
+				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
 				System.out.println("이거구분상가임");
 			}
 		} else {
-			mapKind = "99";
+			addrMap.put("mapKind", "99");
 			System.out.println("여기타면 비정상.....");
 		}
 		
+		// 리스트 담아서 넘겨주기
+		if(brTitleInfoList.size() == 0) {
+			// 아무것도 안함..
+		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
+			addrMap.put("brTitleInfoList", brTitleInfoList);
+		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("2")) {
+			if(brExposInfoAreaList.size() == 0) {
+				// 아무것도 안함..
+			} else {				
+				addrMap.put("brExposInfoAreaList", brExposInfoAreaList);
+			}
+		} else {
+			// 아무것도 안함..
+		}
 		
-		return "";
+		
+		return addrMap;
 	}
 	
 	// 시코드구하기
@@ -189,5 +249,60 @@ public class mapController {
 		System.out.println("너의 시코드?" + cdInfo.getSigunguCd());
 		
 		return cdInfo;
+	}
+	
+	// 아파트 가격산정
+	public String getAptPrice(Map addrMap) throws Exception {
+		String price = "";
+		List<DataApt> dataAptList = new ArrayList<DataApt>();
+		
+		dataAptList = mapService.getAptPrice(addrMap);
+		
+		return price;
+	}
+	
+	// 오피스텔 가격산정
+	public String getOfficePrice(Map addrMap) {
+		String price = "";
+		
+		
+		
+		return price;
+	}
+	
+	// 연립다세대 가격산정
+	public String getMultiPrice(Map addrMap) {
+		String price = "";
+		
+		
+		
+		return price;
+	}
+	
+	// 토지 가격산정
+	public String getLandPrice(Map addrMap) {
+		String price = "";
+		
+		
+		
+		return price;
+	}
+	
+	// 구분상가 가격산정
+	public String getCommercialPrice(Map addrMap) {
+		String price = "";
+		
+		
+		
+		return price;
+	}
+	
+	// 단독다가구 가격산정
+	public String getAlonePrice(Map addrMap) {
+		String price = "";
+		
+		
+		
+		return price;
 	}
 }
