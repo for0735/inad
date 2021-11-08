@@ -79,14 +79,10 @@ public class mapController {
 		} else if(addrArr[0].equals("강원")) {
 			addrArr[0] = "강원도";
 		} 
-		
-		for(int i=0; i<addrArr.length; i++) {
-			System.out.println(addrArr[i]);
-		}
 		//================================================================================================
 		
 		// 여기서부터 계산할것 ==================================================================================
-		Map addrMap = new HashMap();
+		Map<String, Object> addrMap = new HashMap<String, Object>();
 		CdInfo cdInfo = findCdInfo(addrArr);
 		
 		addrMap = mapKind(addrArr, cdInfo);
@@ -100,11 +96,10 @@ public class mapController {
 			// 비정상 코드
 			mv.addObject("price", price);
 		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
-			System.out.println("첫번째 면적?");
-			System.out.println((List)addrMap.get("brExposInfoAreaList"));
-			List<BrTitleInfo> br = (List)addrMap.get("brExposInfoAreaList");
-			//System.out.println(br.get(0).getTotArea());
-			//price = getAptPrice(addrMap);
+			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
+
+			price = getAptPrice(addrMap, br.get(0).getArea());
+			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("4")) { // 오피스텔
 			price = getOfficePrice(addrMap);
 		} else if(addrMap.get("mapKind").toString().equals("3")) { // 연립다세대
@@ -132,7 +127,7 @@ public class mapController {
 	
 	
 	// 필지종류구하기
-	public Map mapKind(String[] argv, CdInfo cdInfo) throws Exception {
+	public Map<String, Object> mapKind(String[] argv, CdInfo cdInfo) throws Exception {
 		
 		/*
 		 * 0 : 토지
@@ -147,7 +142,7 @@ public class mapController {
 		
 		List<BrTitleInfo> brTitleInfoList = new ArrayList<BrTitleInfo>();
 		List<BrExposInfoArea> brExposInfoAreaList = new ArrayList<BrExposInfoArea>();
-		Map addrMap = new HashMap();
+		Map<String, Object> addrMap = new HashMap<String, Object>();
 		String mapKind = "";
 		String addr = "";
 		
@@ -161,7 +156,6 @@ public class mapController {
 			}
 		}
 		
-		System.out.println("검색주소 + " + addr);
 		addrMap.put("cdInfo", cdInfo);
 		addrMap.put("addr", addr);
 
@@ -246,23 +240,46 @@ public class mapController {
 			cdInfoList = mapService.getCdInfoBig(argv);
 		}
 		cdInfo = cdInfoList.get(0);
-		System.out.println("너의 시코드?" + cdInfo.getSigunguCd());
 		
 		return cdInfo;
 	}
 	
 	// 아파트 가격산정
-	public String getAptPrice(Map addrMap) throws Exception {
+	public String getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
 		String price = "";
 		List<DataApt> dataAptList = new ArrayList<DataApt>();
-		
 		dataAptList = mapService.getAptPrice(addrMap);
+		
+		long temp = 0;
+		List<Float> tempF = new ArrayList<Float>();
+		float areaF = Float.parseFloat(area);
+		for(int i=0; i<dataAptList.size(); i++) {
+			if(areaF-10 < Float.parseFloat(dataAptList.get(i).getTotArea()) && Float.parseFloat(dataAptList.get(i).getTotArea()) < areaF+10) {
+				int tradePrice = Integer.parseInt(dataAptList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(dataAptList.get(i).getTotArea());
+				
+				tempF.add(tradePrice/totArea);
+			}
+		}
+		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
 		
 		return price;
 	}
 	
 	// 오피스텔 가격산정
-	public String getOfficePrice(Map addrMap) {
+	public String getOfficePrice(Map<String, Object> addrMap) {
 		String price = "";
 		
 		
@@ -271,7 +288,7 @@ public class mapController {
 	}
 	
 	// 연립다세대 가격산정
-	public String getMultiPrice(Map addrMap) {
+	public String getMultiPrice(Map<String, Object> addrMap) {
 		String price = "";
 		
 		
@@ -280,7 +297,7 @@ public class mapController {
 	}
 	
 	// 토지 가격산정
-	public String getLandPrice(Map addrMap) {
+	public String getLandPrice(Map<String, Object> addrMap) {
 		String price = "";
 		
 		
@@ -289,7 +306,7 @@ public class mapController {
 	}
 	
 	// 구분상가 가격산정
-	public String getCommercialPrice(Map addrMap) {
+	public String getCommercialPrice(Map<String, Object> addrMap) {
 		String price = "";
 		
 		
@@ -298,7 +315,7 @@ public class mapController {
 	}
 	
 	// 단독다가구 가격산정
-	public String getAlonePrice(Map addrMap) {
+	public String getAlonePrice(Map<String, Object> addrMap) {
 		String price = "";
 		
 		
