@@ -10,6 +10,8 @@ import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataMulti;
+import com.inad.mgr.domain.data.DataOffice;
 
 @Mapper
 public interface MapMapper {
@@ -24,4 +26,6 @@ public interface MapMapper {
 			@Param("ji") String ji) throws Exception;
 	
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception;
+	public List<DataOffice> getOfficePrice(Map addrMap) throws Exception;
+	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception;
 }

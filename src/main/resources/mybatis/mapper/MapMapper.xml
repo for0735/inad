@@ -42,6 +42,13 @@
 		AND ji = #{ji}
 	</select>
 	
+	<select id="getOfficePrice" resultType="com.inad.mgr.domain.data.DataOffice" parameterType="hashMap">
+		SELECT * FROM tb_dataOffice
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND bun = cast(#{bun} as unsigned)
+		AND ji = cast(#{ji} as unsigned)
+	</select>
+	
 </mapper>
 
 

@@ -22,6 +22,8 @@ import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataMulti;
+import com.inad.mgr.domain.data.DataOffice;
 import com.inad.mgr.service.MapService;
 
 @Slf4j
@@ -101,9 +103,15 @@ public class mapController {
 			price = getAptPrice(addrMap, br.get(0).getArea());
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("4")) { // 오피스텔
-			price = getOfficePrice(addrMap);
+			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
+
+			price = getOfficePrice(addrMap, br.get(0).getArea());
+			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("3")) { // 연립다세대
-			price = getMultiPrice(addrMap);
+			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
+
+			price = getMultiPrice(addrMap, br.get(0).getArea());
+			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
 			price = getLandPrice(addrMap);
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
@@ -279,19 +287,69 @@ public class mapController {
 	}
 	
 	// 오피스텔 가격산정
-	public String getOfficePrice(Map<String, Object> addrMap) {
+	public String getOfficePrice(Map<String, Object> addrMap, String area) throws Exception {
 		String price = "";
+		List<DataOffice> dataOfficeList = new ArrayList<DataOffice>();
+		dataOfficeList = mapService.getOfficePrice(addrMap);
 		
+		long temp = 0;
+		List<Float> tempF = new ArrayList<Float>();
+		float areaF = Float.parseFloat(area);
+		for(int i=0; i<dataOfficeList.size(); i++) {
+			if(areaF-10 < Float.parseFloat(dataOfficeList.get(i).getTotArea()) && Float.parseFloat(dataOfficeList.get(i).getTotArea()) < areaF+10) {
+				int tradePrice = Integer.parseInt(dataOfficeList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(dataOfficeList.get(i).getTotArea());
+				
+				tempF.add(tradePrice/totArea);
+			}
+		}
 		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
 		
 		return price;
 	}
 	
 	// 연립다세대 가격산정
-	public String getMultiPrice(Map<String, Object> addrMap) {
+	public String getMultiPrice(Map<String, Object> addrMap, String area) throws Exception {
 		String price = "";
+		List<DataMulti> dataMultiList = new ArrayList<DataMulti>();
+		dataMultiList = mapService.getMultiPrice(addrMap);
 		
+		long temp = 0;
+		List<Float> tempF = new ArrayList<Float>();
+		float areaF = Float.parseFloat(area);
+		for(int i=0; i<dataMultiList.size(); i++) {
+			if(areaF-10 < Float.parseFloat(dataMultiList.get(i).getTotArea()) && Float.parseFloat(dataMultiList.get(i).getTotArea()) < areaF+10) {
+				int tradePrice = Integer.parseInt(dataMultiList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(dataMultiList.get(i).getTotArea());
+				
+				tempF.add(tradePrice/totArea);
+			}
+		}
 		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
 		
 		return price;
 	}

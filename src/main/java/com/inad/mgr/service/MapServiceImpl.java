@@ -12,6 +12,8 @@ import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataMulti;
+import com.inad.mgr.domain.data.DataOffice;
 import com.inad.mgr.mapper.MapMapper;
 import com.inad.mgr.util.StringUtil;
 
@@ -94,6 +96,18 @@ public class MapServiceImpl implements MapService {
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception {
 
 		return mapMapper.getAptPrice(addrMap);
+	}
+
+	@Override
+	public List<DataOffice> getOfficePrice(Map addrMap) throws Exception {
+
+		return mapMapper.getOfficePrice(addrMap);
+	}
+
+	@Override
+	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception {
+		
+		return mapMapper.getMultiPrice(addrMap);
 	}
 	
 }
