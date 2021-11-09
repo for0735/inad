@@ -49,6 +49,13 @@
 		AND ji = cast(#{ji} as unsigned)
 	</select>
 	
+	<select id="getMultiPrice" resultType="com.inad.mgr.domain.data.DataMulti" parameterType="hashMap">
+		SELECT * FROM tb_dataMulti
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND bun = cast(#{bun} as unsigned)
+		AND ji = cast(#{ji} as unsigned)
+	</select>
+	
 </mapper>
 
 

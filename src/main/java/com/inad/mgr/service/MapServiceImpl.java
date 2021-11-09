@@ -1,5 +1,6 @@
 package com.inad.mgr.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +107,10 @@ public class MapServiceImpl implements MapService {
 
 	@Override
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception {
+		
+		List<DataMulti> dataMultiList = new ArrayList<DataMulti>();
+		
+		
 		
 		return mapMapper.getMultiPrice(addrMap);
 	}
