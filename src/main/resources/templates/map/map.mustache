@@ -311,6 +311,24 @@ searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 	deleteMark();
     searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+    	/*
+    		mouseEvent.latLng는 위도와 경도 값이 들어있음
+    		x가 가로의값, y가 세로의값이라고 가정했을때
+    		La가 x좌표의값
+    		Ma가 y좌표의값
+    		
+    		값의 0.001 = 100M (즉 m에서 10만을 나눈값)
+    	*/
+    	
+    	console.log(mouseEvent.latLng);
+    	
+    	// 각지도의 200m, 500m 주소리스트 가져올것
+    	var addrListArr200 = [];
+    	var addrListArr500 = [];
+    	
+    	addrListArr200 = cycle200(mouseEvent.latLng);
+    	//addrListArr500 = cycle500(mouseEvent.latLng);
+    	
         if (status === kakao.maps.services.Status.OK) {
             var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
             detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
@@ -327,6 +345,21 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
             infowindow.setContent(content);
             infowindow.open(map, marker);
+            
+            console.log(mouseEvent.latLng);
+            console.log(addrListArr200[0]);
+            
+            //주소리스트
+            var addrList200 = [];
+            for(var i=0; i<addrListArr200.length; i++){
+            	searchDetailAddrFromCoords(addrListArr200[i], function(result1, status1) {
+            		addrList200[i] = result1[0].address.address_name;
+            		console.log(i);
+            	});
+            }
+            
+            console.log("여기서부터 주소리스트");
+            console.log(addrList200[i]);
             
             $.ajax({
 				type: 'POST',
