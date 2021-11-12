@@ -40,22 +40,9 @@ function cycle200(obj){
  	var yArray = [];
  	var returnArray = [];
  	
- 	console.log("======================================");
- 	//console.log("찍힘? 	 " + obj.Ma);
- 	console.log("======================================");
- 	
  	for(var i=0; i<=10; i++){
- 		console.log(y[i]);
  		yArray[i] = 100 - y[i];
- 		console.log(yArray[i]);
- 		
- 		console.log("----------------------");
- 		
- 		console.log(x[i]);
  		xArray[i] = 100 - x[i];
- 		
- 		console.log(xArray[i]);
- 		
  		
  		var YD = parseFloat(obj.Ma) - yArray[i]/100000;
  		var YU = parseFloat(obj.Ma) + yArray[i]/100000;
@@ -68,41 +55,34 @@ function cycle200(obj){
  		var tempXR = XR;
  		
  		while(true){
-			var object = { 
-				Ma: tempYD, 
-				La: tempXL
-	 		}
+ 			var tempObj1 = JSON.parse(JSON.stringify(obj));
+ 			Object.setPrototypeOf(tempObj1, Object.getPrototypeOf(obj));
+ 		
+			tempObj1.Ma = Math.round(tempYD * 10000000000000)/10000000000000;
+	 		tempObj1.La = Math.round(tempXL * 10000000000000)/10000000000000;
 	 		
-	 		returnArray[returnArray.length] = object;
+	 		returnArray[returnArray.length] = tempObj1;
 	 		
- 			console.log("여기길이 : " + returnArray.length);
+	 		var tempObj2 = JSON.parse(JSON.stringify(obj));
+ 			Object.setPrototypeOf(tempObj2, Object.getPrototypeOf(obj));
 	 		
-	 		object = { 
-				Ma: tempYU, 
-				La: tempXL
-	 		}
+	 		tempObj2.Ma = Math.round(tempYU * 10000000000000)/10000000000000;
+	 		tempObj2.La = Math.round(tempXL * 10000000000000)/10000000000000;
 	 		
-	 		returnArray[returnArray.length] = object;
-	 		
- 			console.log("여기길이 : " + returnArray.length);
+	 		returnArray[returnArray.length] = tempObj2;
 	 		
 	 		tempXL = tempXL - 0.0001;
-	 		
-	 		console.log("임시가변길이" + tempXL);
-	 		console.log("임시고정길이" + tempXR);
 	 		
 	 		if(tempXR > tempXL){
 				break;
 			}
 		}
- 		
  	}
  	
  	
- 	console.log("여기서부터 진또배기");
+ 	console.log("주소리스트");
 	console.log(returnArray);
  	console.log("======================================");
- 	console.log(returnArray.length);
  	
  	
  	return returnArray;
@@ -112,33 +92,21 @@ function cycle200(obj){
 //y = 10, 20, 30, 40......
 //x = -sqrt(250^2-(y-250)^2)+250
 function cycle500(obj){
+
 	var x = [];
 	var y = [];
- 	
- 	for(var i=0; i<=25; i++){
- 		y[i] = 10*(i);
+	
+ 	for(var i=0; i<=12; i++){
+ 		y[i] = 20*(i);
  		x[i] = -Math.sqrt(250**2-(y[i]-250)**2)+250;
  	}
  	var xArray = [];
  	var yArray = [];
  	var returnArray = [];
  	
- 	console.log("======================================");
- 	//console.log("찍힘? 	 " + obj.Ma);
- 	console.log("======================================");
- 	
  	for(var i=0; i<=25; i++){
- 		console.log(y[i]);
  		yArray[i] = 250 - y[i];
- 		console.log(yArray[i]);
- 		
- 		console.log("----------------------");
- 		
- 		console.log(x[i]);
  		xArray[i] = 250 - x[i];
- 		
- 		console.log(xArray[i]);
- 		
  		
  		var YD = parseFloat(obj.Ma) - yArray[i]/100000;
  		var YU = parseFloat(obj.Ma) + yArray[i]/100000;
@@ -151,41 +119,34 @@ function cycle500(obj){
  		var tempXR = XR;
  		
  		while(true){
-			var object = { 
-				Ma: tempYD, 
-				La: tempXL
-	 		}
+ 			var tempObj1 = JSON.parse(JSON.stringify(obj));
+ 			Object.setPrototypeOf(tempObj1, Object.getPrototypeOf(obj));
+ 		
+			tempObj1.Ma = Math.round(tempYD * 10000)/10000;
+	 		tempObj1.La = Math.round(tempXL * 10000)/10000;
 	 		
-	 		returnArray[returnArray.length] = object;
+	 		returnArray[returnArray.length] = tempObj1;
 	 		
- 			console.log("여기길이 : " + returnArray.length);
+	 		var tempObj2 = JSON.parse(JSON.stringify(obj));
+ 			Object.setPrototypeOf(tempObj2, Object.getPrototypeOf(obj));
 	 		
-	 		object = { 
-				Ma: tempYU, 
-				La: tempXL
-	 		}
+	 		tempObj2.Ma = Math.round(tempYU * 10000)/10000;
+	 		tempObj2.La = Math.round(tempXL * 10000)/10000;
 	 		
-	 		returnArray[returnArray.length] = object;
-	 		
- 			console.log("여기길이 : " + returnArray.length);
+	 		returnArray[returnArray.length] = tempObj2;
 	 		
 	 		tempXL = tempXL - 0.0001;
-	 		
-	 		console.log("임시가변길이" + tempXL);
-	 		console.log("임시고정길이" + tempXR);
 	 		
 	 		if(tempXR > tempXL){
 				break;
 			}
 		}
- 		
  	}
  	
  	
- 	console.log("여기서부터 진또배기");
+ 	console.log("주소리스트");
 	console.log(returnArray);
  	console.log("======================================");
- 	console.log(returnArray.length);
  	
  	
  	return returnArray;
