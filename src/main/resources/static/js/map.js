@@ -58,16 +58,16 @@ function cycle200(obj){
  			var tempObj1 = JSON.parse(JSON.stringify(obj));
  			Object.setPrototypeOf(tempObj1, Object.getPrototypeOf(obj));
  		
-			tempObj1.Ma = Math.round(tempYD * 10000000000000)/10000000000000;
-	 		tempObj1.La = Math.round(tempXL * 10000000000000)/10000000000000;
+			tempObj1.Ma = Math.round(tempYD * 100000)/100000;
+	 		tempObj1.La = Math.round(tempXL * 100000)/100000;
 	 		
 	 		returnArray[returnArray.length] = tempObj1;
 	 		
 	 		var tempObj2 = JSON.parse(JSON.stringify(obj));
  			Object.setPrototypeOf(tempObj2, Object.getPrototypeOf(obj));
 	 		
-	 		tempObj2.Ma = Math.round(tempYU * 10000000000000)/10000000000000;
-	 		tempObj2.La = Math.round(tempXL * 10000000000000)/10000000000000;
+	 		tempObj2.Ma = Math.round(tempYU * 100000)/100000;
+	 		tempObj2.La = Math.round(tempXL * 100000)/100000;
 	 		
 	 		returnArray[returnArray.length] = tempObj2;
 	 		
@@ -78,8 +78,6 @@ function cycle200(obj){
 			}
 		}
  	}
- 	
- 	
  	console.log("주소리스트");
 	console.log(returnArray);
  	console.log("======================================");
@@ -96,15 +94,15 @@ function cycle500(obj){
 	var x = [];
 	var y = [];
 	
- 	for(var i=0; i<=12; i++){
- 		y[i] = 20*(i);
+ 	for(var i=0; i<=10; i++){
+ 		y[i] = 25*(i);
  		x[i] = -Math.sqrt(250**2-(y[i]-250)**2)+250;
  	}
  	var xArray = [];
  	var yArray = [];
  	var returnArray = [];
  	
- 	for(var i=0; i<=25; i++){
+ 	for(var i=0; i<=10; i++){
  		yArray[i] = 250 - y[i];
  		xArray[i] = 250 - x[i];
  		
@@ -122,16 +120,16 @@ function cycle500(obj){
  			var tempObj1 = JSON.parse(JSON.stringify(obj));
  			Object.setPrototypeOf(tempObj1, Object.getPrototypeOf(obj));
  		
-			tempObj1.Ma = Math.round(tempYD * 10000)/10000;
-	 		tempObj1.La = Math.round(tempXL * 10000)/10000;
+			tempObj1.Ma = Math.round(tempYD * 100000)/100000;
+	 		tempObj1.La = Math.round(tempXL * 100000)/100000;
 	 		
 	 		returnArray[returnArray.length] = tempObj1;
 	 		
 	 		var tempObj2 = JSON.parse(JSON.stringify(obj));
  			Object.setPrototypeOf(tempObj2, Object.getPrototypeOf(obj));
 	 		
-	 		tempObj2.Ma = Math.round(tempYU * 10000)/10000;
-	 		tempObj2.La = Math.round(tempXL * 10000)/10000;
+	 		tempObj2.Ma = Math.round(tempYU * 100000)/100000;
+	 		tempObj2.La = Math.round(tempXL * 100000)/100000;
 	 		
 	 		returnArray[returnArray.length] = tempObj2;
 	 		
