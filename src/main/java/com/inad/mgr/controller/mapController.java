@@ -48,7 +48,13 @@ public class mapController {
 		ModelAndView mv = new ModelAndView("jsonView");
 		
 		int result = 0;
-		String addr = request.getParameter("addr");
+		String addr = request.getParameter("addr"); 
+		String[] addrList = request.getParameterValues("addrList");
+		
+		for(int i=0; i<addrList.length; i++) {
+			System.out.println("???");
+			System.out.println(addrList[i]);
+		}
 		String[] addrArr = addr.split(" ");
 		
 		//광역시로 변환 =========================================================================

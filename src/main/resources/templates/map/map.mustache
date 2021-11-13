@@ -311,21 +311,6 @@ searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 	deleteMark();
     searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-    	/*
-    		mouseEvent.latLng는 위도와 경도 값이 들어있음
-    		x가 가로의값, y가 세로의값이라고 가정했을때
-    		La가 x좌표의값
-    		Ma가 y좌표의값
-    		
-    		값의 0.001 = 100M (즉 m에서 10만을 나눈값)
-    	*/
-    	
-    	// 각지도의 200m, 500m 주소리스트 가져올것
-    	//var addrListArr200 = [];
-    	var addrListArr500 = [];
-    	
-    	//addrListArr200 = cycle200(mouseEvent.latLng);
-    	addrListArr500 = cycle500(mouseEvent.latLng);
     	
         if (status === kakao.maps.services.Status.OK) {
             var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
@@ -343,48 +328,38 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
             infowindow.setContent(content);
             infowindow.open(map, marker);
+			
+			var addrList200 = [];
+			addrList200 = getAddrList200(mouseEvent.latLng);
+			
+			for(var i=0; i<addrList200.length; i++){
+	    		console.log(addrList200[i]);
+		    }
+			          
+			setTimeout(function() { 
+				$.ajax({
+					type: 'POST',
+					url: '/map/search',
+					traditional : true,
+					data: {"addr" : result[0].address.address_name, 
+						"addrList" : addrList200 },
+					dataType: 'JSON',
+					success: function(data)
+					{
+						if(data.result == 1){
+							alert("주소반환성공");
+							console.log("너의길이 : " + addrList200.length);
+						} else {
+							alert("주소반환실패");
+						}
+					},
+					error:function(request,status,data)
+					{
+				         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
+				    }
+				});
+			}, 5000);            
             
-            //주소리스트
-            /*var addrList200 = [];
-            for(var i=0; i<addrListArr200.length; i++){
-            	//console.log(addrListArr200[i]);
-            
-            	searchDetailAddrFromCoords(addrListArr200[i], function(result1, status1) {
-            		addrList200[i] = result1[0].address.address_name;
-            		console.log(result1[0].address.address_name);
-            	});
-            }*/
-            
-            //주소리스트
-            var addrList500 = [];
-            for(var i=0; i<addrListArr500.length; i++){
-            	//console.log(addrListArr500[i]);
-            
-            	searchDetailAddrFromCoords(addrListArr500[i], function(result2, status2) {
-            		addrList500[i] = result2[0].address.address_name;
-            		console.log(result2[0].address.address_name);
-            	});
-            }
-            
-            $.ajax({
-				type: 'POST',
-				url: '/map/search',
-				async : false,
-				data: {"addr": result[0].address.address_name },
-				dataType: 'JSON',
-				success: function(data)
-				{
-					if(data.result == 1){
-						alert("주소반환성공");
-					} else {
-						alert("주소반환실패");
-					}
-				},
-				error:function(request,status,data)
-				{
-			         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
-			    }
-			});
         }   
     });
 });
@@ -486,4 +461,58 @@ function deleteMark() {
 	marker.setMap(null);
 	infowindow.setMap(null);
 }
+
+
+
+/*
+	mouseEvent.latLng는 위도와 경도 값이 들어있음
+	x가 가로의값, y가 세로의값이라고 가정했을때
+	La가 x좌표의값
+	Ma가 y좌표의값
+	
+	값의 0.001 = 100M (즉 m에서 10만을 나눈값)
+*/
+
+function getAddrList200(obj){
+	var addrListArr200 = [];
+	
+	addrListArr200 = cycle200(obj);
+	
+	//주소리스트
+    var addrList200 = [];
+    for(var i=0; i<addrListArr200.length; i++){
+    	searchDetailAddrFromCoords(addrListArr200[i], function(result1, status1) {
+    		addrList200[i] = result1[0].address.address_name;
+    		//console.log(result1[0].address.address_name);
+    	});
+    }
+    
+    console.log("길이 >? " + addrList200.length);
+    
+    for(var i=0; i<addrList200.length; i++){
+    	console.log("주소목록");
+    	console.log(addrList200[i]);
+    }
+    
+    return addrList200;
+}
+
+function getAddrList500(obj){
+	var addrListArr500 = [];
+	
+	addrListArr500 = cycle200(obj);
+	
+	//주소리스트
+    var addrList500 = [];
+    for(var i=0; i<addrListArr500.length; i++){
+    	searchDetailAddrFromCoords(addrListArr500[i], function(result1, status1) {
+    		addrList500[i] = result1[0].address.address_name;
+    		console.log(result1[0].address.address_name);
+    	});
+    }
+    
+    return addrList500;
+}
+
+
 </script>
