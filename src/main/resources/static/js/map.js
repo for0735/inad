@@ -149,3 +149,95 @@ function cycle500(obj){
  	
  	return returnArray;
 }
+
+/*
+
+async function getAddrList200(obj){
+	var addrListArr200 = [];
+	
+	addrListArr200 = cycle200(obj);
+	
+	//주소리스트
+    var addrList200 = [];
+    for(var i=0; i<addrListArr200.length; i++){
+    	searchDetailAddrFromCoords(addrListArr200[i], async function(result1, status1) {
+    		addrList200[i] = await result1[0].address.address_name;
+    		console.log(result1[0].address.address_name);
+    	});
+    }
+    
+    console.log("길이 >? " + addrList200.length);
+    
+    for(var i=0; i<addrList200.length; i++){
+    	console.log("주소목록");
+    	console.log(addrList200[i]);
+    }
+    
+    return addrList200;
+}*/
+
+/*
+function getAddrList200(obj){
+	let addrListArr200 = cycle200(obj);
+	
+	//주소리스트
+    const addrList200 = [];
+    
+    for (let item of addrListArr200) {
+		searchDetailAddrFromCoords(item, async function(result1, status1) {
+    		addrList200.push(result1[0].address.address_name);
+    		//console.log(result1[0].address.address_name);
+	    	//console.log("길이 >? " + addrList200.length);
+    	});
+	}
+	
+	console.log("길이?", addrList200);
+	console.log("길이?", addrList200.length);
+	return addrList200;
+}*/
+
+
+/*
+	mouseEvent.latLng는 위도와 경도 값이 들어있음
+	x가 가로의값, y가 세로의값이라고 가정했을때
+	La가 x좌표의값
+	Ma가 y좌표의값
+	
+	값의 0.001 = 100M (즉 m에서 10만을 나눈값)
+*/
+
+
+function getAddrList200(obj){
+	let addrListArr200 = [];
+	
+	addrListArr200 = cycle200(obj);
+	
+	//주소리스트
+    let addrList200 = [];
+    for(let i=0; i<addrListArr200.length; i++){
+    	searchDetailAddrFromCoords(addrListArr200[i], function(result1, status1) {
+    		addrList200[i] = result1[0].address.address_name;
+    		console.log(result1[0].address.address_name);
+    	});
+    }    
+    
+    return addrList200;
+}
+
+
+function getAddrList500(obj){
+	var addrListArr500 = [];
+	
+	addrListArr500 = cycle200(obj);
+	
+	//주소리스트
+    var addrList500 = [];
+    for(var i=0; i<addrListArr500.length; i++){
+    	searchDetailAddrFromCoords(addrListArr500[i], function(result1, status1) {
+    		addrList500[i] = result1[0].address.address_name;
+    		console.log(result1[0].address.address_name);
+    	});
+    }
+    
+    return addrList500;
+}

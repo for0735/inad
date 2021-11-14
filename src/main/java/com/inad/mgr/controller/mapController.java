@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
 import com.inad.mgr.service.MapService;
+import com.inad.mgr.util.StringUtil;
 
 @Slf4j
 @Controller
@@ -51,43 +53,25 @@ public class mapController {
 		String addr = request.getParameter("addr"); 
 		String[] addrList = request.getParameterValues("addrList");
 		
-		for(int i=0; i<addrList.length; i++) {
-			System.out.println("???");
-			System.out.println(addrList[i]);
-		}
+		//중복제거
+        int length = StringUtil.remove_Duplicate_Elements(addrList, addrList.length);
+        
 		String[] addrArr = addr.split(" ");
+		addrArr[0] = siNameReturn(addrArr[0]);
 		
-		//광역시로 변환 =========================================================================
-		if(addrArr[0].equals("서울")) {
-			addrArr[0] = "서울특별시";
-		} else if(addrArr[0].equals("경기")) {
-			addrArr[0] = "경기도";
-		} else if(addrArr[0].equals("부산")) {
-			addrArr[0] = "부산광역시";
-		} else if(addrArr[0].equals("인천")) {
-			addrArr[0] = "인천광역시";
-		} else if(addrArr[0].equals("대구")) {
-			addrArr[0] = "대구광역시";
-		} else if(addrArr[0].equals("광주")) {
-			addrArr[0] = "광주광역시";
-		} else if(addrArr[0].equals("울산")) {
-			addrArr[0] = "울산광역시";
-		} else if(addrArr[0].equals("경남")) {
-			addrArr[0] = "경상남도";
-		} else if(addrArr[0].equals("경북")) {
-			addrArr[0] = "경상북도";
-		} else if(addrArr[0].equals("충북")) {
-			addrArr[0] = "충청북도";
-		} else if(addrArr[0].equals("충남")) {
-			addrArr[0] = "충청남도";
-		} else if(addrArr[0].equals("전남")) {
-			addrArr[0] = "전라남도";
-		} else if(addrArr[0].equals("전북")) {
-			addrArr[0] = "전라북도";
-		} else if(addrArr[0].equals("강원")) {
-			addrArr[0] = "강원도";
-		} 
-		//================================================================================================
+		String[][] addrArr200 = new String[length][];
+		for(int i=0; i<length; i++) {
+			String[] temp = addrList[i].split(" ");
+			addrArr200[i] = new String[temp.length];
+			for(int j=0; j<temp.length; j++) {
+				addrArr200[i][j] = temp[j];
+			}
+			addrArr200[i][0] = siNameReturn(addrArr200[i][0]);
+		}
+		
+		//System.out.println(Arrays.deepToString(addrArr200));
+		
+		
 		
 		// 여기서부터 계산할것 ==================================================================================
 		Map<String, Object> addrMap = new HashMap<String, Object>();
@@ -116,7 +100,7 @@ public class mapController {
 		} else if(addrMap.get("mapKind").toString().equals("3")) { // 연립다세대
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 
-			price = getMultiPrice(addrMap, br.get(0).getArea());
+			price = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
 			price = getLandPrice(addrMap);
@@ -137,6 +121,43 @@ public class mapController {
 		
 		mv.addObject("result", result);
 		return mv;
+	}
+	
+	// 시 네이밍 변경
+	public String siNameReturn(String si) {
+		//광역시로 변환 =========================================================================
+		if(si.equals("서울")) {
+			si = "서울특별시";
+		} else if(si.equals("경기")) {
+			si = "경기도";
+		} else if(si.equals("부산")) {
+			si = "부산광역시";
+		} else if(si.equals("인천")) {
+			si = "인천광역시";
+		} else if(si.equals("대구")) {
+			si = "대구광역시";
+		} else if(si.equals("광주")) {
+			si = "광주광역시";
+		} else if(si.equals("울산")) {
+			si = "울산광역시";
+		} else if(si.equals("경남")) {
+			si = "경상남도";
+		} else if(si.equals("경북")) {
+			si = "경상북도";
+		} else if(si.equals("충북")) {
+			si = "충청북도";
+		} else if(si.equals("충남")) {
+			si = "충청남도";
+		} else if(si.equals("전남")) {
+			si = "전라남도";
+		} else if(si.equals("전북")) {
+			si = "전라북도";
+		} else if(si.equals("강원")) {
+			si = "강원도";
+		} 
+		//================================================================================================
+		
+		return si;
 	}
 	
 	
@@ -172,6 +193,8 @@ public class mapController {
 		
 		addrMap.put("cdInfo", cdInfo);
 		addrMap.put("addr", addr);
+		
+		
 
 		// 필지구해와야함...
 		brTitleInfoList = mapService.getKind(argv, cdInfo, addr);
@@ -327,16 +350,38 @@ public class mapController {
 	}
 	
 	// 연립다세대 가격산정
-	public String getMultiPrice(Map<String, Object> addrMap, String area) throws Exception {
+	public String getMultiPrice(Map<String, Object> addrMap, String area, String[][] addrArr) throws Exception {
 		String price = "";
 		List<DataMulti> dataMultiList = new ArrayList<DataMulti>();
-		dataMultiList = mapService.getMultiPrice(addrMap);
+		
+		//실거래 리스트 가져오기
+		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
+		System.out.println("배열의길이" + addrArr.length);
+		for(int i=0; i<addrArr.length; i++) {
+			System.out.println(i);
+			System.out.println(Arrays.deepToString(addrArr[i]));
+			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
+			
+			
+			addrMap = mapKind(addrArr[i], tempCdInfo);
+			
+			if(addrMap.get("mapKind").toString().equals("3")) {
+				List<DataMulti> tempDataMultiList = new ArrayList<DataMulti>();
+				
+				tempDataMultiList = mapService.getMultiPrice(addrMap);
+				
+				System.out.println("사이즈  " + tempDataMultiList.size());
+				for(int j=0; j<tempDataMultiList.size(); j++) {
+					dataMultiList.add(tempDataMultiList.get(j));
+				}
+			}
+		}
 		
 		long temp = 0;
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
 		for(int i=0; i<dataMultiList.size(); i++) {
-			if(areaF-10 < Float.parseFloat(dataMultiList.get(i).getTotArea()) && Float.parseFloat(dataMultiList.get(i).getTotArea()) < areaF+10) {
+			if(areaF-15 < Float.parseFloat(dataMultiList.get(i).getTotArea()) && Float.parseFloat(dataMultiList.get(i).getTotArea()) < areaF+15) {
 				int tradePrice = Integer.parseInt(dataMultiList.get(i).getTradePrice());
 				float totArea = Float.parseFloat(dataMultiList.get(i).getTotArea());
 				

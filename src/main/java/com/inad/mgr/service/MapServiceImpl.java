@@ -108,10 +108,6 @@ public class MapServiceImpl implements MapService {
 	@Override
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception {
 		
-		List<DataMulti> dataMultiList = new ArrayList<DataMulti>();
-		
-		
-		
 		return mapMapper.getMultiPrice(addrMap);
 	}
 	

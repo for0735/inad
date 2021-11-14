@@ -12,4 +12,22 @@ public class StringUtil {
 		
 		return temp;
 	}
+	
+	public static int remove_Duplicate_Elements(String arr[], int n){  
+        if (n==0 || n==1){  
+            return n;  
+        }  
+        String[] tempA = new String[n];  
+        int j = 0;  
+        for (int i=0; i<n-1; i++){  
+            if (!arr[i].equals(arr[i+1])){  
+                tempA[j++] = arr[i];  
+            }  
+         }  
+        tempA[j++] = arr[n-1];       
+        for (int i=0; i<j; i++){  
+            arr[i] = tempA[i];  
+        }  
+        return j;  
+    }  
 }
