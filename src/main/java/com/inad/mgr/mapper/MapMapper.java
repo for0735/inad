@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -28,4 +29,5 @@ public interface MapMapper {
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception;
 	public List<DataOffice> getOfficePrice(Map addrMap) throws Exception;
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception;
+	public List<DataAlone> getAlonePrice(Map addrMap) throws Exception;
 }

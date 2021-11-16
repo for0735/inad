@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -109,6 +110,12 @@ public class MapServiceImpl implements MapService {
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception {
 		
 		return mapMapper.getMultiPrice(addrMap);
+	}
+
+	@Override
+	public List<DataAlone> getAlonePrice(Map addrMap) throws Exception {
+
+		return mapMapper.getAlonePrice(addrMap);
 	}
 	
 }

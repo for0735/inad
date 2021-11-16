@@ -329,15 +329,16 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             infowindow.setContent(content);
             infowindow.open(map, marker);
 			
-			const addrList200 = getAddrList200(mouseEvent.latLng);
+			//const addrList200 = getAddrList200(mouseEvent.latLng);
+			const addrList500 = getAddrList500(mouseEvent.latLng);
 			          
 			setTimeout(function() { 
 				$.ajax({
 					type: 'POST',
 					url: '/map/search',
 					traditional : true,
-					data: {"addr" : result[0].address.address_name, 
-						"addrList" : addrList200 },
+					data: {"addr": result[0].address.address_name, //"addrList200" : addrList200,
+							"addrList500" : addrList500  },
 					dataType: 'JSON',
 					success: function(data)
 					{
@@ -353,7 +354,7 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 				         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
 				    }
 				});
-			}, 3000);
+			}, 5000);
         }   
     });
 });
@@ -421,13 +422,15 @@ function searchAddr(){
 		        if (status === kakao.maps.services.Status.OK) {
 		        
 		            const addrList200 = getAddrList200(coords);
+		            const addrList500 = getAddrList500(coords);
 		            
 		            setTimeout(function() { 
 			            $.ajax({
 							type: 'POST',
 							url: '/map/search',
 							traditional : true,
-							data: {"addr": result[0].address.address_name, "addrList" : addrList200 },
+							data: {"addr": result[0].address.address_name, "addrList200" : addrList200,
+							"addrList500" : addrList500  },
 							dataType: 'JSON',
 							success: function(data)
 							{
@@ -442,7 +445,7 @@ function searchAddr(){
 						         console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
 						    }
 						});
-					}, 3000);
+					}, 5000);
 					
 		        }   
 		    });

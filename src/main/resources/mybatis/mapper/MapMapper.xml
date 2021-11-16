@@ -56,6 +56,13 @@
 		AND ji = #{ji}
 	</select>
 	
+	<select id="getAlonePrice" resultType="com.inad.mgr.domain.data.DataAlone" parameterType="hashMap">
+		SELECT * FROM tb_dataAlone
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND bun = #{bun}
+		AND ji = #{ji}
+	</select>
+	
 </mapper>
 
 

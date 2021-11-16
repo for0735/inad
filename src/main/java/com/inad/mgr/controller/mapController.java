@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
+import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -51,22 +52,36 @@ public class mapController {
 		
 		int result = 0;
 		String addr = request.getParameter("addr"); 
-		String[] addrList = request.getParameterValues("addrList");
+		//String[] addrList200 = request.getParameterValues("addrList200");
+		String[] addrList500 = request.getParameterValues("addrList500");
 		
 		//중복제거
-        int length = StringUtil.remove_Duplicate_Elements(addrList, addrList.length);
+        //int length = StringUtil.remove_Duplicate_Elements(addrList200, addrList200.length);
         
 		String[] addrArr = addr.split(" ");
 		addrArr[0] = siNameReturn(addrArr[0]);
 		
-		String[][] addrArr200 = new String[length][];
+		/*String[][] addrArr200 = new String[length][];
 		for(int i=0; i<length; i++) {
-			String[] temp = addrList[i].split(" ");
+			String[] temp = addrList200[i].split(" ");
 			addrArr200[i] = new String[temp.length];
 			for(int j=0; j<temp.length; j++) {
 				addrArr200[i][j] = temp[j];
 			}
 			addrArr200[i][0] = siNameReturn(addrArr200[i][0]);
+		}*/
+		
+		//중복제거
+		int length = StringUtil.remove_Duplicate_Elements(addrList500, addrList500.length);
+		
+		String[][] addrArr500 = new String[length][];
+		for(int i=0; i<length; i++) {
+			String[] temp = addrList500[i].split(" ");
+			addrArr500[i] = new String[temp.length];
+			for(int j=0; j<temp.length; j++) {
+				addrArr500[i][j] = temp[j];
+			}
+			addrArr500[i][0] = siNameReturn(addrArr500[i][0]);
 		}
 		
 		//System.out.println(Arrays.deepToString(addrArr200));
@@ -100,12 +115,15 @@ public class mapController {
 		} else if(addrMap.get("mapKind").toString().equals("3")) { // 연립다세대
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 
-			price = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
+			//price = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
-			price = getLandPrice(addrMap);
+
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
-			price = getAlonePrice(addrMap);
+			List<BrTitleInfo> br = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
+
+			price = getAlonePrice(addrMap, br.get(0).getPlatArea(), addrArr500);
+			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("5")) { // 구분상가
 			price = getCommercialPrice(addrMap);
 		}
@@ -424,10 +442,60 @@ public class mapController {
 	}
 	
 	// 단독다가구 가격산정
-	public String getAlonePrice(Map<String, Object> addrMap) {
+	public String getAlonePrice(Map<String, Object> addrMap, String area, String[][] addrArr) throws Exception {
 		String price = "";
+		List<DataAlone> dataAloneList = new ArrayList<DataAlone>();
 		
+		//실거래 리스트 가져오기
+		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
+		System.out.println("배열의길이" + addrArr.length);
+		for(int i=0; i<addrArr.length; i++) {
+			System.out.println(i);
+			System.out.println(Arrays.deepToString(addrArr[i]));
+			if(Arrays.deepToString(addrArr[i]).equals("")) {
+				continue;
+			}
+			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
+			
+			
+			addrMap = mapKind(addrArr[i], tempCdInfo);
+			
+			if(addrMap.get("mapKind").toString().equals("1")) {
+				List<DataAlone> tempDataAloneList = new ArrayList<DataAlone>();
+				
+				tempDataAloneList = mapService.getAlonePrice(addrMap);
+				
+				System.out.println("사이즈  " + tempDataAloneList.size());
+				for(int j=0; j<tempDataAloneList.size(); j++) {
+					dataAloneList.add(tempDataAloneList.get(j));
+				}
+			}
+		}
 		
+		long temp = 0;
+		List<Float> tempF = new ArrayList<Float>();
+		float areaF = Float.parseFloat(area);
+		for(int i=0; i<dataAloneList.size(); i++) {
+			if(areaF-15 < Float.parseFloat(dataAloneList.get(i).getTotArea()) && Float.parseFloat(dataAloneList.get(i).getTotArea()) < areaF+15) {
+				int tradePrice = Integer.parseInt(dataAloneList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(dataAloneList.get(i).getTotArea());
+				
+				tempF.add(tradePrice/totArea);
+			}
+		}
+		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
 		
 		return price;
 	}

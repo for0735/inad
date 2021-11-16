@@ -133,7 +133,7 @@ function cycle500(obj){
 	 		
 	 		returnArray[returnArray.length] = tempObj2;
 	 		
-	 		tempXL = tempXL - 0.0001;
+	 		tempXL = tempXL - 0.00020;
 	 		
 	 		if(tempXR > tempXL){
 				break;
@@ -226,13 +226,13 @@ function getAddrList200(obj){
 
 
 function getAddrList500(obj){
-	var addrListArr500 = [];
+	let addrListArr500 = [];
 	
-	addrListArr500 = cycle200(obj);
+	addrListArr500 = cycle500(obj);
 	
 	//주소리스트
-    var addrList500 = [];
-    for(var i=0; i<addrListArr500.length; i++){
+    let addrList500 = [];
+    for(let i=0; i<addrListArr500.length; i++){
     	searchDetailAddrFromCoords(addrListArr500[i], function(result1, status1) {
     		addrList500[i] = result1[0].address.address_name;
     		console.log(result1[0].address.address_name);
