@@ -329,8 +329,8 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
             infowindow.setContent(content);
             infowindow.open(map, marker);
 			
-			//const addrList200 = getAddrList200(mouseEvent.latLng);
-			const addrList500 = getAddrList500(mouseEvent.latLng);
+			const addrList200 = getAddrList200(mouseEvent.latLng);
+			//const addrList500 = getAddrList500(mouseEvent.latLng);
 			          
 			setTimeout(function() { 
 				$.ajax({
@@ -422,7 +422,7 @@ function searchAddr(){
 		        if (status === kakao.maps.services.Status.OK) {
 		        
 		            const addrList200 = getAddrList200(coords);
-		            const addrList500 = getAddrList500(coords);
+		            //const addrList500 = getAddrList500(coords);
 		            
 		            setTimeout(function() { 
 			            $.ajax({

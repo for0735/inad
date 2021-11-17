@@ -3,11 +3,13 @@ package com.inad.mgr.service;
 import java.util.List;
 import java.util.Map;
 
+import com.inad.mgr.domain.ApmmNvLandOpen;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
 
@@ -20,6 +22,9 @@ public interface MapService {
 	
 	//필지종류 구하기
 	public List<BrTitleInfo> getKind(String[] argv, CdInfo cdInfo, String addr) throws Exception;
+	
+	//필지종류 구하기(토지일경우)
+	public List<ApmmNvLandOpen> getKindLand(String[] argv, CdInfo cdInfo, String addr) throws Exception;
 
 	//필지종류 구하기(집합일경우)
 	public List<BrExposInfoArea> getKindZipHap(String[] argv, CdInfo cdInfo, String addr) throws Exception;
@@ -34,6 +39,9 @@ public interface MapService {
 	//연립다세대 가격산정
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception;
 	
-	//연립다세대 가격산정
+	//단독다가구 가격산정
 	public List<DataAlone> getAlonePrice(Map addrMap) throws Exception;
+	
+	//토지 가격산정
+	public List<DataLand> getLandPrice(Map addrMap) throws Exception;
 }

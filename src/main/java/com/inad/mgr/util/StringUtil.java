@@ -30,4 +30,22 @@ public class StringUtil {
         }  
         return j;  
     }  
+	
+	public static Boolean BJimok(String aJimok, String bJimok) {
+		boolean tempJimok = false;
+		
+		if(aJimok.equals("01") || aJimok.equals("02")) {
+			if(bJimok.equals("01") || bJimok.equals("02")) {
+				tempJimok = true;
+			}
+		}
+		
+		if(aJimok.equals("01") || aJimok.equals("02")) {
+			if(bJimok.equals("01") || bJimok.equals("02")) {
+				tempJimok = true;
+			}
+		}
+		
+		return tempJimok;
+	}
 }

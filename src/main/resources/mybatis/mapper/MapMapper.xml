@@ -27,6 +27,13 @@
 		AND ji = #{ji}
 	</select>
 	
+	<select id="getKindLand" resultType="com.inad.mgr.domain.ApmmNvLandOpen">
+		SELECT * FROM tb_apmmNvLandOpen
+		WHERE pnu LIKE CONCAT(#{siCode},#{bjdongCd},'%')
+		AND bobn = #{bun}
+		AND bubn = #{ji}
+	</select>
+	
 	<select id="getKindZipHap" resultType="com.inad.mgr.domain.BrExposInfoArea">
 		SELECT * FROM tb_brExposInfoArea
 		WHERE platPlc LIKE CONCAT(#{addr},'%')
@@ -58,6 +65,13 @@
 	
 	<select id="getAlonePrice" resultType="com.inad.mgr.domain.data.DataAlone" parameterType="hashMap">
 		SELECT * FROM tb_dataAlone
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND bun = #{bun}
+		AND ji = #{ji}
+	</select>
+	
+	<select id="getLandPrice" resultType="com.inad.mgr.domain.data.DataLand" parameterType="hashMap">
+		SELECT * FROM tb_dataLand
 		WHERE platPlc LIKE CONCAT(#{addr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}

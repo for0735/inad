@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.inad.mgr.domain.ApmmNvLandOpen;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
 import com.inad.mgr.service.MapService;
@@ -52,16 +54,16 @@ public class mapController {
 		
 		int result = 0;
 		String addr = request.getParameter("addr"); 
-		//String[] addrList200 = request.getParameterValues("addrList200");
-		String[] addrList500 = request.getParameterValues("addrList500");
+		String[] addrList200 = request.getParameterValues("addrList200");
+		//String[] addrList500 = request.getParameterValues("addrList500");
 		
 		//중복제거
-        //int length = StringUtil.remove_Duplicate_Elements(addrList200, addrList200.length);
+        int length = StringUtil.remove_Duplicate_Elements(addrList200, addrList200.length);
         
 		String[] addrArr = addr.split(" ");
 		addrArr[0] = siNameReturn(addrArr[0]);
 		
-		/*String[][] addrArr200 = new String[length][];
+		String[][] addrArr200 = new String[length][];
 		for(int i=0; i<length; i++) {
 			String[] temp = addrList200[i].split(" ");
 			addrArr200[i] = new String[temp.length];
@@ -69,10 +71,10 @@ public class mapController {
 				addrArr200[i][j] = temp[j];
 			}
 			addrArr200[i][0] = siNameReturn(addrArr200[i][0]);
-		}*/
+		}
 		
 		//중복제거
-		int length = StringUtil.remove_Duplicate_Elements(addrList500, addrList500.length);
+		/*int length = StringUtil.remove_Duplicate_Elements(addrList500, addrList500.length);
 		
 		String[][] addrArr500 = new String[length][];
 		for(int i=0; i<length; i++) {
@@ -82,7 +84,7 @@ public class mapController {
 				addrArr500[i][j] = temp[j];
 			}
 			addrArr500[i][0] = siNameReturn(addrArr500[i][0]);
-		}
+		}*/
 		
 		//System.out.println(Arrays.deepToString(addrArr200));
 		
@@ -119,10 +121,12 @@ public class mapController {
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
 
+			price = getLandPrice(addrMap, addrArr200);
+			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
 			List<BrTitleInfo> br = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 
-			price = getAlonePrice(addrMap, br.get(0).getPlatArea(), addrArr500);
+			price = getAlonePrice(addrMap, br.get(0).getPlatArea(), addrArr200);
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("5")) { // 구분상가
 			price = getCommercialPrice(addrMap);
@@ -195,6 +199,7 @@ public class mapController {
 		
 		List<BrTitleInfo> brTitleInfoList = new ArrayList<BrTitleInfo>();
 		List<BrExposInfoArea> brExposInfoAreaList = new ArrayList<BrExposInfoArea>();
+		List<ApmmNvLandOpen> apmmNvLandOpenList = new ArrayList<ApmmNvLandOpen>();
 		Map<String, Object> addrMap = new HashMap<String, Object>();
 		String mapKind = "";
 		String addr = "";
@@ -218,6 +223,8 @@ public class mapController {
 		brTitleInfoList = mapService.getKind(argv, cdInfo, addr);
 		if(brTitleInfoList.size() == 0) {
 			addrMap.put("mapKind", "0");
+			apmmNvLandOpenList = mapService.getKindLand(argv, cdInfo, addr);
+			
 			System.out.println("이거토지임");
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
 			addrMap.put("mapKind", "1");
@@ -266,6 +273,9 @@ public class mapController {
 		
 		// 리스트 담아서 넘겨주기
 		if(brTitleInfoList.size() == 0) {
+			if(apmmNvLandOpenList.size() != 0) {
+				addrMap.put("apmmNvLandOpenList", apmmNvLandOpenList);
+			}
 			// 아무것도 안함..
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
 			addrMap.put("brTitleInfoList", brTitleInfoList);
@@ -424,10 +434,71 @@ public class mapController {
 	}
 	
 	// 토지 가격산정
-	public String getLandPrice(Map<String, Object> addrMap) {
+	public String getLandPrice(Map<String, Object> addrMap, String[][] addrArr) throws Exception {
 		String price = "";
+		List<ApmmNvLandOpen> br = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
+		List<DataLand> dataLandList = new ArrayList<DataLand>();
 		
+		ApmmNvLandOpen apmm = new ApmmNvLandOpen();
+		apmm = br.get(0);
 		
+		//실거래 리스트 가져오기
+		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
+		System.out.println("배열의길이" + addrArr.length);
+		for(int i=0; i<addrArr.length; i++) {
+			System.out.println(i);
+			System.out.println(Arrays.deepToString(addrArr[i]));
+			if(Arrays.deepToString(addrArr[i]).equals("")) {
+				continue;
+			}
+			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
+			
+			
+			addrMap = mapKind(addrArr[i], tempCdInfo);
+			
+			if(addrMap.get("mapKind").toString().equals("0")) {
+				List<DataLand> tempDataLandList = new ArrayList<DataLand>();
+				
+				tempDataLandList = mapService.getLandPrice(addrMap);
+				
+				System.out.println("사이즈  " + tempDataLandList.size());
+				for(int j=0; j<tempDataLandList.size(); j++) {
+					dataLandList.add(tempDataLandList.get(j));
+				}
+			}
+		}
+		
+		long temp = 0;
+		float areaF = Float.parseFloat(apmm.getParea());
+		List<Float> tempF = new ArrayList<Float>();
+		for(int i=0; i<dataLandList.size(); i++) {
+			boolean a = false;
+			
+			// 용도지역은 완전일치, 이용상황은 조건부일치
+			if(apmm.getSpfc1().equals(dataLandList.get(i).getMainPurpsAreaCd()) || apmm.getSpfc2().equals(dataLandList.get(i).getMainPurpsAreaCd())) {
+				
+			}
+			
+			if(a) {
+				int tradePrice = Integer.parseInt(dataLandList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(dataLandList.get(i).getAgreementArea());
+				
+				tempF.add(tradePrice/totArea);
+			}
+		}
+		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
 		
 		return price;
 	}

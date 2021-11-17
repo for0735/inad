@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inad.mgr.domain.ApmmNvLandOpen;
 import com.inad.mgr.domain.BrExposInfoArea;
 import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
 import com.inad.mgr.mapper.MapMapper;
@@ -72,6 +74,32 @@ public class MapServiceImpl implements MapService {
 	}
 
 	@Override
+	public List<ApmmNvLandOpen> getKindLand(String[] argv, CdInfo cdInfo, String addr) throws Exception {
+		StringUtil stringUtil = new StringUtil();
+
+		String siCode = "";
+		String bjdongCd = "";
+		String bun = "";
+		String ji = "";
+		
+		siCode = cdInfo.getSigunguCd();
+		bjdongCd = cdInfo.getBjdongCd();
+		
+		String bunJi = argv[argv.length-1];
+		
+		if(bunJi.contains("-")) {
+			String[] temp = bunJi.split("-");
+			bun = stringUtil.getJiBun(temp[0]);
+			ji = stringUtil.getJiBun(temp[1]);
+		} else {
+			bun = stringUtil.getJiBun(bunJi);
+			ji = "0000";
+		}
+		
+		return mapMapper.getKindLand(siCode, bjdongCd, bun, ji);
+	}
+
+	@Override
 	public List<BrExposInfoArea> getKindZipHap(String[] argv, CdInfo cdInfo, String addr) throws Exception {
 		StringUtil stringUtil = new StringUtil();
 
@@ -116,6 +144,12 @@ public class MapServiceImpl implements MapService {
 	public List<DataAlone> getAlonePrice(Map addrMap) throws Exception {
 
 		return mapMapper.getAlonePrice(addrMap);
+	}
+
+	@Override
+	public List<DataLand> getLandPrice(Map addrMap) throws Exception {
+
+		return mapMapper.getLandPrice(addrMap);
 	}
 	
 }
