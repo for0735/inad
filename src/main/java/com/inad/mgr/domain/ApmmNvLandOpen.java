@@ -80,5 +80,113 @@ public class ApmmNvLandOpen {
 	String geoHl;					//지형고저
 	String geoForm;					//지형형상
 	String roadSide;				//도로접면
+	public String getStdmt() {
+		return stdmt;
+	}
+	public void setStdmt(String stdmt) {
+		this.stdmt = stdmt;
+	}
+	public String getPnu() {
+		return pnu;
+	}
+	public void setPnu(String pnu) {
+		this.pnu = pnu;
+	}
+	public String getLandSeqno() {
+		return landSeqno;
+	}
+	public void setLandSeqno(String landSeqno) {
+		this.landSeqno = landSeqno;
+	}
+	public String getSggCd() {
+		return sggCd;
+	}
+	public void setSggCd(String sggCd) {
+		this.sggCd = sggCd;
+	}
+	public String getLandLocCd() {
+		return landLocCd;
+	}
+	public void setLandLocCd(String landLocCd) {
+		this.landLocCd = landLocCd;
+	}
+	public String getLandGbn() {
+		return landGbn;
+	}
+	public void setLandGbn(String landGbn) {
+		this.landGbn = landGbn;
+	}
+	public String getBobn() {
+		return bobn;
+	}
+	public void setBobn(String bobn) {
+		this.bobn = bobn;
+	}
+	public String getBubn() {
+		return bubn;
+	}
+	public void setBubn(String bubn) {
+		this.bubn = bubn;
+	}
+	public String getAdmUmdCd() {
+		return admUmdCd;
+	}
+	public void setAdmUmdCd(String admUmdCd) {
+		this.admUmdCd = admUmdCd;
+	}
+	public String getPnilp() {
+		return pnilp;
+	}
+	public void setPnilp(String pnilp) {
+		this.pnilp = pnilp;
+	}
+	public String getJimok() {
+		return jimok;
+	}
+	public void setJimok(String jimok) {
+		this.jimok = jimok;
+	}
+	public String getParea() {
+		return parea;
+	}
+	public void setParea(String parea) {
+		this.parea = parea;
+	}
+	public String getSpfc1() {
+		return spfc1;
+	}
+	public void setSpfc1(String spfc1) {
+		this.spfc1 = spfc1;
+	}
+	public String getSpfc2() {
+		return spfc2;
+	}
+	public void setSpfc2(String spfc2) {
+		this.spfc2 = spfc2;
+	}
+	public String getLandUse() {
+		return landUse;
+	}
+	public void setLandUse(String landUse) {
+		this.landUse = landUse;
+	}
+	public String getGeoHl() {
+		return geoHl;
+	}
+	public void setGeoHl(String geoHl) {
+		this.geoHl = geoHl;
+	}
+	public String getGeoForm() {
+		return geoForm;
+	}
+	public void setGeoForm(String geoForm) {
+		this.geoForm = geoForm;
+	}
+	public String getRoadSide() {
+		return roadSide;
+	}
+	public void setRoadSide(String roadSide) {
+		this.roadSide = roadSide;
+	}
 	
 }

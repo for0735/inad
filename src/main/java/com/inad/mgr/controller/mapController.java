@@ -106,9 +106,12 @@ public class mapController {
 			mv.addObject("price", price);
 		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
-
-			price = getAptPrice(addrMap, br.get(0).getArea());
-			System.out.println("가격은??? : " + price);
+			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
+			brExposInfoArea = br.get(0);
+			
+			addrMap = getAptPrice(addrMap, br.get(0).getArea());
+			addrMap.put("brExposInfoArea", brExposInfoArea);
+			System.out.println("가격은??? : " + addrMap.get("price").toString());
 		} else if(addrMap.get("mapKind").toString().equals("4")) { // 오피스텔
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 
@@ -141,6 +144,9 @@ public class mapController {
 			e.printStackTrace();
 		}
 		
+		mv.addObject("addrMap", addrMap);
+		mv.addObject("landKind", addrMap.get("mapKind").toString());
+		mv.addObject("price", price);
 		mv.addObject("result", result);
 		return mv;
 	}
@@ -310,7 +316,7 @@ public class mapController {
 	}
 	
 	// 아파트 가격산정
-	public String getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
+	public Map<String, Object> getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
 		String price = "";
 		List<DataApt> dataAptList = new ArrayList<DataApt>();
 		dataAptList = mapService.getAptPrice(addrMap);
@@ -338,9 +344,10 @@ public class mapController {
 		System.out.println(Math.round(sum));
 		System.out.println(tempF.size());
 		System.out.println((Math.round(sum/tempF.size() * areaF)));
-		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
+		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
+		addrMap.put("multiSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
 		
-		return price;
+		return addrMap;
 	}
 	
 	// 오피스텔 가격산정

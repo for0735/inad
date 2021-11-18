@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/css/map.css" type="text/css">
 <link rel="stylesheet" href="/css/main.css" type="text/css">
 <style>
-    #my_modal {
+    #loading_modal {
         display: none;
         width: 400px;
         height: 800px;
@@ -12,7 +12,7 @@
         border-radius: 3px;
     }
 
-    #my_modal .modal_close_btn {
+    #loading_modal .modal_close_btn {
         position: absolute;
         top: 10px;
         right: 10px;
@@ -55,10 +55,10 @@ window.onhashchange = function() {
     <span id="centerAddr"></span>
 </div>
 
-<button id="popup_open_btn">팝업창 띄어 줘염</button>
+<!-- <button id="popup_open_btn">팝업창 띄어 줘염</button> -->
 
 <!-- loading -->
-<div class="loading1" id="my_modal" style="display:none">
+<div class="loading1" id="loading_modal" style="display:none">
 	<div class="loading2">
 	<h1>Loading</h1>
 	<!-- 3  -->
@@ -77,7 +77,7 @@ window.onhashchange = function() {
 		  </svg>
 		</div>
 	</div>
-	<a class="modal_close_btn">닫기</a>
+	<!-- <a class="modal_close_btn" id="closeBtn">닫기</a> -->
 </div> <!----- loading end ----->
 
 
@@ -189,7 +189,7 @@ window.onhashchange = function() {
 
 
 <!-- table 집합-->
-<div class="table-group" id="div_multi" style="display:none">
+<div class="table-group" id="div_multi">
 	<tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
     </tr>
@@ -197,7 +197,7 @@ window.onhashchange = function() {
 	  <tbody>
 		<tr>
 		  <td class="background-s">추정시세</td>
-          <td>126,000,000 원</td>
+          <td id="multi_price">126,000,000 원</td>
 		</tr>
 	  </tbody>
 	</table>
@@ -206,37 +206,37 @@ window.onhashchange = function() {
 	  <tbody>
 		<tr>
 		  <td class="background-s">㎡ 단가</td>
-		  <td>9,052,000 원</td>
+		  <td id="multi_s_price">9,052,000 원</td>
 		  <td class="background-s">3.3㎡ 단가</td>
-          <td>29,927,000 원</td>
+          <td id="multi_ss_price">29,927,000 원</td>
 		</tr>
 		<tr>
 		  <td class="background-s">전용면적</td>
-		  <td>114.27 ㎡ / 34.57 (3.3㎡)</td>
+		  <td id="multi_area">114.27 ㎡ / 34.57 (3.3㎡)</td>
 		  <td class="background-s">공급면적</td>
-          <td>144.28 ㎡ / 43.65(3.2㎡)</td>
+          <td id="multi_s_area">144.28 ㎡ / 43.65(3.2㎡)</td>
 		</tr>
 		<tr>
 		  <td class="background-s">기준시점</td>
-		  <td>2021-09-24</td>
+		  <td id="multi_s_day">2021-09-24</td>
 		  <td class="background-s">사용승인일</td>
-          <td>2008-04-30</td>
+          <td id="multi_ss_day">2008-04-30</td>
 		</tr>
         <tr>
 		  <td class="background-s">해당층 / 최고층</td>
-		  <td>7층 / 24</td>
+		  <td id="multi_flr">7층 / 24</td>
 		  <td class="background-s">세대수</td>
-          <td>718 세대</td>
+          <td id="multi_ctn">718 세대</td>
 		</tr>
         <tr>
 		  <td class="background-s">동 용도</td>
-		  <td>공동주택</td>
+		  <td id="multi_dong_purps">공동주택</td>
 		  <td class="background-s">호 용도</td>
-          <td>아파트</td>
+          <td id="multi_ho_purps">아파트</td>
 		</tr>
         <tr>
 		  <td class="background-s">구조</td>
-		  <td>철근콘크리트 구조</td>
+		  <td id="multi_strct">철근콘크리트 구조</td>
 		</tr>
 	  </tbody>
 	</table>
@@ -257,8 +257,8 @@ window.onhashchange = function() {
             <th>거래금액</th>
 		</tr>
 	  </thead>
-	  <tbody>
-		<tr>
+	  <tbody id="multi_body">
+		<-- <tr>
 		  <td>1</td>
 		  <td>매우<br>유사</td>
 		  <td>강동구 강동 565-1</td>
@@ -293,7 +293,7 @@ window.onhashchange = function() {
 		  <td>1991.09</td>
 		  <td>2003.01</td>
           <td>79,500만원</td>  
-		</tr>
+		</tr> -->
 	  </tbody>
 	</table>
 </div> <!----- table-group end ----->
@@ -331,6 +331,8 @@ searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 	deleteMark();
     searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+    
+    	modal('loading_modal');
     	
         if (status === kakao.maps.services.Status.OK) {
             var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
@@ -362,9 +364,27 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 					dataType: 'JSON',
 					success: function(data)
 					{
+						closeModal('loading_modal');
+					
 						if(data.result == 1){
 							alert("주소반환성공");
-							console.log("너의길이 : " + addrList200.length);
+							
+							if(data.landKind == "2"){
+								$("#multi_price").text(data.addrMap.price);
+								$("#multi_s_price").text(data.addrMap.multiSPrice);
+								$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
+								$("#multi_area").text(data.addrMap.brExposInfoArea.area);
+								$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+								$("#multi_s_day").text(data.addrMap.brExposInfoArea.crtnDay);
+								$("#multi_ss_day").text(data.addrMap.brExposInfoArea.crtnDay);
+								$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo);
+								$("#multi_ctn").text(data.addrMap.brExposInfoArea.flrNo);
+								$("#multi_dong_purps").text(data.addrMap.brExposInfoArea.mainPurpsCdNm);
+								$("#multi_ho_purps").text(data.addrMap.brExposInfoArea.etcPurps);
+								$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
+								
+								// 바디구현
+							}
 						} else {
 							alert("주소반환실패");
 						}
@@ -419,6 +439,8 @@ function searchAddr(){
 	
 	    // 정상적으로 검색이 완료됐으면 
 	     if (status === kakao.maps.services.Status.OK) {
+	     
+	     	modal('loading_modal');
 	
 	        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 	
@@ -454,8 +476,27 @@ function searchAddr(){
 							dataType: 'JSON',
 							success: function(data)
 							{
+								closeModal('loading_modal');
+					
 								if(data.result == 1){
 									alert("주소반환성공");
+									
+									if(data.landKind == "2"){
+										$("#multi_price").text(data.addrMap.price);
+										$("#multi_s_price").text(data.addrMap.multiSPrice);
+										$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
+										$("#multi_area").text(data.addrMap.brExposInfoArea.area);
+										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+										$("#multi_s_day").text(data.addrMap.brExposInfoArea.crtnDay);
+										$("#multi_ss_day").text(data.addrMap.brExposInfoArea.crtnDay);
+										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo);
+										$("#multi_ctn").text(data.addrMap.brExposInfoArea.flrNo);
+										$("#multi_dong_purps").text(data.addrMap.brExposInfoArea.mainPurpsCdNm);
+										$("#multi_ho_purps").text(data.addrMap.brExposInfoArea.etcPurps);
+										$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
+										
+										// 바디구현
+									}
 								} else {
 									alert("주소반환실패");
 								}
@@ -501,13 +542,16 @@ function modal(id) {
         // 레이어 색갈은 여기서 바꾸면 됨
         backgroundColor: 'rgba(0,0,0,0.4)'
     });
+    bg.id = 'modalId';
     document.body.append(bg);
 
     // 닫기 버튼 처리, 시꺼먼 레이어와 모달 div 지우기
+    /*
     modal.querySelector('.modal_close_btn').addEventListener('click', function() {
         bg.remove();
         modal.style.display = 'none';
     });
+    */
 
     modal.setStyle({
         position: 'fixed',
@@ -532,10 +576,18 @@ Element.prototype.setStyle = function(styles) {
     return this;
 };
 
+/*
 document.getElementById('popup_open_btn').addEventListener('click', function() {
     // 모달창 띄우기
-    modal('my_modal');
+    modal('loading_modal');
 });
+*/
 
+function closeModal(id){
+	var modal = document.getElementById(id);
+
+	$("#modalId").remove();
+	modal.style.display = 'none';
+}
 
 </script>
