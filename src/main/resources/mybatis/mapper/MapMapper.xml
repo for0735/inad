@@ -15,7 +15,7 @@
 		SELECT * FROM tb_cdInfo
 		WHERE si LIKE CONCAT(#{si},'%')
 		AND gun LIKE CONCAT(#{gun},'%')
-		AND (gu1 LIKE CONCAT(#{gu},'%') OR gu2 LIKE CONCAT(#{gu},'%'))
+		AND (gu1 LIKE CONCAT('%',#{gu},'%') OR gu2 LIKE CONCAT('%',#{gu},'%'))
 		ORDER BY hangCd DESC 
 	</select>
 	
@@ -72,7 +72,8 @@
 	
 	<select id="getLandPrice" resultType="com.inad.mgr.domain.data.DataLand" parameterType="hashMap">
 		SELECT * FROM tb_dataLand
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE sigunguCd = #{sigunguCd}
+		AND hangCd = #{hangCd}
 		AND bun = #{bun}
 		AND ji = #{ji}
 	</select>

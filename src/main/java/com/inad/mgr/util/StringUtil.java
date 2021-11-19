@@ -31,21 +31,39 @@ public class StringUtil {
         return j;  
     }  
 	
-	public static Boolean BJimok(String aJimok, String bJimok) {
-		boolean tempJimok = false;
+	public static Boolean BLandUse(String aLandUse, String bLandUse) {
+		boolean tempLandUse = false;
 		
-		if(aJimok.equals("01") || aJimok.equals("02")) {
-			if(bJimok.equals("01") || bJimok.equals("02")) {
-				tempJimok = true;
+		if(aLandUse.equals("110") || aLandUse.equals("150") || aLandUse.equals("160")) {
+			if(bLandUse.equals("110") || bLandUse.equals("150") || bLandUse.equals("160")) {
+				tempLandUse = true;
 			}
 		}
 		
-		if(aJimok.equals("01") || aJimok.equals("02")) {
-			if(bJimok.equals("01") || bJimok.equals("02")) {
-				tempJimok = true;
+		if(aLandUse.equals("210") || aLandUse.equals("220") || aLandUse.equals("230") || aLandUse.equals("240")) {
+			if(bLandUse.equals("210") || bLandUse.equals("220") || bLandUse.equals("230") || bLandUse.equals("240")) {
+				tempLandUse = true;
 			}
 		}
 		
-		return tempJimok;
+		if(aLandUse.equals("310") || aLandUse.equals("320") || aLandUse.equals("330")) {
+			if(bLandUse.equals("310") || bLandUse.equals("320") || bLandUse.equals("330")) {
+				tempLandUse = true;
+			}
+		}
+		
+		if(aLandUse.equals("410") || aLandUse.equals("420") || aLandUse.equals("430")) {
+			if(bLandUse.equals("410") || bLandUse.equals("420") || bLandUse.equals("430")) {
+				tempLandUse = true;
+			}
+		}
+		
+		if(aLandUse.equals("510") || aLandUse.equals("610")) {
+			if(bLandUse.equals("510") || bLandUse.equals("610")) {
+				tempLandUse = true;
+			}
+		}
+		
+		return tempLandUse;
 	}
 }

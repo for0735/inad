@@ -11,8 +11,28 @@
         border: 1px solid #888;
         border-radius: 3px;
     }
+    
+    #modal_land {
+        display: none;
+        width: 400px;
+        height: 800px;
+        padding: 20px 60px;
+        background-color: #fefefe;
+        border: 1px solid #888;
+        border-radius: 3px;
+    }
+    
+    #modal_multi {
+        display: none;
+        width: 750px;
+        height: 800px;
+        padding: 20px 60px;
+        background-color: #fefefe;
+        border: 1px solid #888;
+        border-radius: 3px;
+    }
 
-    #loading_modal .modal_close_btn {
+    .modal_close_btn {
         position: absolute;
         top: 10px;
         right: 10px;
@@ -77,7 +97,7 @@ window.onhashchange = function() {
 		  </svg>
 		</div>
 	</div>
-	<!-- <a class="modal_close_btn" id="closeBtn">닫기</a> -->
+	<a class="modal_close_btn" style="display:none;">닫기</a>
 </div> <!----- loading end ----->
 
 
@@ -189,10 +209,10 @@ window.onhashchange = function() {
 
 
 <!-- table 집합-->
-<div class="table-group" id="div_multi">
-	<tr class="table-close">
+<div class="table-group" id="modal_multi" style="display:none">
+	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
-    </tr>
+    </tr> -->
     <table class="table-title">
 	  <tbody>
 		<tr>
@@ -258,44 +278,9 @@ window.onhashchange = function() {
 		</tr>
 	  </thead>
 	  <tbody id="multi_body">
-		<-- <tr>
-		  <td>1</td>
-		  <td>매우<br>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr>
-		<tr>
-		  <td>2</td>
-		  <td>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr>
-		<tr>
-		  <td>3</td>
-		  <td>매우<br>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr> -->
 	  </tbody>
 	</table>
+	<a class="modal_close_btn">닫기</a>
 </div> <!----- table-group end ----->
 
 
@@ -367,8 +352,6 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 						closeModal('loading_modal');
 					
 						if(data.result == 1){
-							alert("주소반환성공");
-							
 							if(data.landKind == "2"){
 								$("#multi_price").text(data.addrMap.price);
 								$("#multi_s_price").text(data.addrMap.multiSPrice);
@@ -384,6 +367,32 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 								$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
 								
 								// 바디구현
+								var tbody = "";
+								
+								var data_len = data.multiList.length;
+								if(data_len == 0){
+									tbody += "<td colspan='10'>";
+									tbody += "데이터가 없습니다.";
+									tbody += "</td>";
+								} else {
+									for(var i=0; i<3; i++) {
+										tbody += "<tr>";
+										tbody += "<td>"+ (Number(i)+1) +"</td>";
+										tbody += "<td>유사</td>";
+										tbody += "<td>"+ data.multiList[i].platPlc + " " + data.multiList[i].bun
+											+ "-" + data.multiList[i].ji +"</td>";
+										tbody += "<td>"+ data.multiList[i].bldNm +"</td>";
+										tbody += "<td>"+ data.multiList[i].floor + " 층</td>";
+										tbody += "<td>"+ data.multiList[i].totArea +"</td>";
+										tbody += "<td>알수없음</td>";
+										tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
+										tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
+										tbody += "<td>"+ data.multiList[i].tradePrice +"만원</td>";
+										tbody += "</tr>";
+									}
+								}
+								
+								$("#multi_body").html(tbody);
 							}
 						} else {
 							alert("주소반환실패");
@@ -479,8 +488,6 @@ function searchAddr(){
 								closeModal('loading_modal');
 					
 								if(data.result == 1){
-									alert("주소반환성공");
-									
 									if(data.landKind == "2"){
 										$("#multi_price").text(data.addrMap.price);
 										$("#multi_s_price").text(data.addrMap.multiSPrice);
@@ -495,7 +502,36 @@ function searchAddr(){
 										$("#multi_ho_purps").text(data.addrMap.brExposInfoArea.etcPurps);
 										$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
 										
+										
 										// 바디구현
+										var tbody = "";
+										
+										var data_len = data.multiList.length;
+										if(data_len == 0){
+											tbody += "<td colspan='10'>";
+											tbody += "데이터가 없습니다.";
+											tbody += "</td>";
+										} else {
+											for(var i=0; i<3; i++) {
+												tbody += "<tr>";
+												tbody += "<td>"+ (Number(i)+1) +"</td>";
+												tbody += "<td>유사</td>";
+												tbody += "<td>"+ data.multiList[i].platPlc + " " + data.multiList[i].bun
+													+ "-" + data.multiList[i].ji +"</td>";
+												tbody += "<td>"+ data.multiList[i].bldNm +"</td>";
+												tbody += "<td>"+ data.multiList[i].floor + " 층</td>";
+												tbody += "<td>"+ data.multiList[i].totArea +"</td>";
+												tbody += "<td>알수없음</td>";
+												tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
+												tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
+												tbody += "<td>"+ data.multiList[i].tradePrice +"만원</td>";
+												tbody += "</tr>";
+											}
+										}
+										
+										$("#multi_body").html(tbody);
+										
+										modal('modal_multi');
 									}
 								} else {
 									alert("주소반환실패");
@@ -546,12 +582,11 @@ function modal(id) {
     document.body.append(bg);
 
     // 닫기 버튼 처리, 시꺼먼 레이어와 모달 div 지우기
-    /*
     modal.querySelector('.modal_close_btn').addEventListener('click', function() {
         bg.remove();
         modal.style.display = 'none';
     });
-    */
+    
 
     modal.setStyle({
         position: 'fixed',

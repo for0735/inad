@@ -101,7 +101,7 @@ public class mapController {
 		// 여기서부터 가격산정
 		String price = "";
 		
-		if(addrMap.get("mapKind").toString().equals("0") || addrMap.get("mapKind").toString().equals("98") || addrMap.get("mapKind").toString().equals("99")) {
+		if(addrMap.get("mapKind").toString().equals("98") || addrMap.get("mapKind").toString().equals("99")) {
 			// 비정상 코드
 			mv.addObject("price", price);
 		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
@@ -112,6 +112,8 @@ public class mapController {
 			addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
+			
+			mv.addObject("multiList", (ArrayList<DataApt>)addrMap.get("multiList"));
 		} else if(addrMap.get("mapKind").toString().equals("4")) { // 오피스텔
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 
@@ -123,7 +125,6 @@ public class mapController {
 			//price = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
-
 			price = getLandPrice(addrMap, addrArr200);
 			System.out.println("가격은??? : " + price);
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
@@ -222,6 +223,7 @@ public class mapController {
 		
 		addrMap.put("cdInfo", cdInfo);
 		addrMap.put("addr", addr);
+		addrMap.put("argv", argv);
 		
 		
 
@@ -230,7 +232,14 @@ public class mapController {
 		if(brTitleInfoList.size() == 0) {
 			addrMap.put("mapKind", "0");
 			apmmNvLandOpenList = mapService.getKindLand(argv, cdInfo, addr);
-			
+
+			if(apmmNvLandOpenList.size()!=0) {
+				addrMap.put("bun", apmmNvLandOpenList.get(0).getBobn());
+				addrMap.put("ji", apmmNvLandOpenList.get(0).getBubn());				
+			} else {
+				addrMap.put("bun", "9999");
+				addrMap.put("ji", "9999");	
+			}
 			System.out.println("이거토지임");
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
 			addrMap.put("mapKind", "1");
@@ -346,6 +355,7 @@ public class mapController {
 		System.out.println((Math.round(sum/tempF.size() * areaF)));
 		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
 		addrMap.put("multiSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
+		addrMap.put("multiList", dataAptList);
 		
 		return addrMap;
 	}
@@ -470,8 +480,15 @@ public class mapController {
 				
 				System.out.println("사이즈  " + tempDataLandList.size());
 				for(int j=0; j<tempDataLandList.size(); j++) {
-					dataLandList.add(tempDataLandList.get(j));
-				}
+					// 용도지역은 완전일치, 이용상황은 조건부일치
+					if(apmm.getSpfc1().equals(tempDataLandList.get(j).getMainPurpsAreaCd()) || apmm.getSpfc2().equals(tempDataLandList.get(j).getMainPurpsAreaCd())) {
+						List<ApmmNvLandOpen> tempBr = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
+						
+						if(tempBr.size() != 0 && StringUtil.BLandUse(apmm.getLandUse(), tempBr.get(0).getLandUse())) {
+							dataLandList.add(tempDataLandList.get(j));
+						}
+					}
+				}				
 			}
 		}
 		
@@ -479,19 +496,10 @@ public class mapController {
 		float areaF = Float.parseFloat(apmm.getParea());
 		List<Float> tempF = new ArrayList<Float>();
 		for(int i=0; i<dataLandList.size(); i++) {
-			boolean a = false;
+			int tradePrice = Integer.parseInt(dataLandList.get(i).getTradePrice());
+			float totArea = Float.parseFloat(dataLandList.get(i).getAgreementArea());
 			
-			// 용도지역은 완전일치, 이용상황은 조건부일치
-			if(apmm.getSpfc1().equals(dataLandList.get(i).getMainPurpsAreaCd()) || apmm.getSpfc2().equals(dataLandList.get(i).getMainPurpsAreaCd())) {
-				
-			}
-			
-			if(a) {
-				int tradePrice = Integer.parseInt(dataLandList.get(i).getTradePrice());
-				float totArea = Float.parseFloat(dataLandList.get(i).getAgreementArea());
-				
-				tempF.add(tradePrice/totArea);
-			}
+			tempF.add(tradePrice/totArea);
 		}
 		
 		float sum = 0.0f;

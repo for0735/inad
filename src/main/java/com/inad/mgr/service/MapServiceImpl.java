@@ -148,7 +148,13 @@ public class MapServiceImpl implements MapService {
 
 	@Override
 	public List<DataLand> getLandPrice(Map addrMap) throws Exception {
-
+		
+		CdInfo cdInfo = new CdInfo();
+		cdInfo = (CdInfo)addrMap.get("cdInfo");
+		
+		addrMap.put("sigunguCd", cdInfo.getSigunguCd());
+		addrMap.put("hangCd", cdInfo.getHangCd());
+		
 		return mapMapper.getLandPrice(addrMap);
 	}
 	
