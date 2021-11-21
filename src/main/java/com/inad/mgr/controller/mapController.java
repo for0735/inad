@@ -106,11 +106,13 @@ public class mapController {
 			mv.addObject("price", price);
 		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
+			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
 			brExposInfoArea = br.get(0);
 			
 			addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brTitleInfo", brTitle.get(0));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
 			
 			mv.addObject("multiList", (ArrayList<DataApt>)addrMap.get("multiList"));
@@ -145,6 +147,14 @@ public class mapController {
 			e.printStackTrace();
 		}
 		
+		/*
+		 * 넘겨야할정보
+		 * 연립다세대, 아파트, 오피스텔 
+		 * 1. BrExposInfoArea
+		 * 2. BrTitleInfo
+		 * 3. 실거래정보
+		 * 4. 동, 호수
+		 */
 		mv.addObject("addrMap", addrMap);
 		mv.addObject("landKind", addrMap.get("mapKind").toString());
 		mv.addObject("price", price);
@@ -295,6 +305,7 @@ public class mapController {
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("1")){
 			addrMap.put("brTitleInfoList", brTitleInfoList);
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("2")) {
+			addrMap.put("brTitleInfoList", brTitleInfoList);
 			if(brExposInfoAreaList.size() == 0) {
 				// 아무것도 안함..
 			} else {				

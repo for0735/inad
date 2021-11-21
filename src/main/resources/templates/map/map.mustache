@@ -356,8 +356,8 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 								$("#multi_price").text(data.addrMap.price);
 								$("#multi_s_price").text(data.addrMap.multiSPrice);
 								$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
-								$("#multi_area").text(data.addrMap.brExposInfoArea.area);
-								$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+								$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
+								$("#multi_s_area").text(data.addrMap.brTitleInfo.totArea);
 								$("#multi_s_day").text(data.addrMap.brExposInfoArea.crtnDay);
 								$("#multi_ss_day").text(data.addrMap.brExposInfoArea.crtnDay);
 								$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo);
@@ -492,7 +492,7 @@ function searchAddr(){
 										$("#multi_price").text(data.addrMap.price);
 										$("#multi_s_price").text(data.addrMap.multiSPrice);
 										$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
-										$("#multi_area").text(data.addrMap.brExposInfoArea.area);
+										$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
 										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
 										$("#multi_s_day").text(data.addrMap.brExposInfoArea.crtnDay);
 										$("#multi_ss_day").text(data.addrMap.brExposInfoArea.crtnDay);
