@@ -352,7 +352,7 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 						closeModal('loading_modal');
 					
 						if(data.result == 1){
-							if(data.landKind == "2"){
+							if(data.landKind == "2" || data.landKind == "4"){
 								$("#multi_price").text(data.addrMap.price);
 								$("#multi_s_price").text(data.addrMap.multiSPrice);
 								$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
@@ -488,25 +488,29 @@ function searchAddr(){
 								closeModal('loading_modal');
 					
 								if(data.result == 1){
-									if(data.landKind == "2"){
+									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3"){
 										$("#multi_price").text(data.addrMap.price);
 										$("#multi_s_price").text(data.addrMap.multiSPrice);
 										$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
 										$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
 										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
-										$("#multi_s_day").text(data.addrMap.brExposInfoArea.crtnDay);
-										$("#multi_ss_day").text(data.addrMap.brExposInfoArea.crtnDay);
-										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo);
-										$("#multi_ctn").text(data.addrMap.brExposInfoArea.flrNo);
-										$("#multi_dong_purps").text(data.addrMap.brExposInfoArea.mainPurpsCdNm);
-										$("#multi_ho_purps").text(data.addrMap.brExposInfoArea.etcPurps);
+										$("#multi_s_day").text(data.addrMap.brTitleInfo.crtnDay);
+										$("#multi_ss_day").text(data.addrMap.brTitleInfo.useAprDay);
+										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + " / " +data.addrMap.brTitleInfo.grndFlrCnt);
+										if(data.addrMap.brTitleInfo.hhldCnt == "0"){
+											$("#multi_ctn").text("-");
+										} else {
+											$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt);
+										}
+										$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
+										$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
 										$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
 										
 										
 										// 바디구현
 										var tbody = "";
 										
-										var data_len = data.multiList.length;
+										var data_len = data.addrMap.multiList.length;
 										if(data_len == 0){
 											tbody += "<td colspan='10'>";
 											tbody += "데이터가 없습니다.";
@@ -516,15 +520,19 @@ function searchAddr(){
 												tbody += "<tr>";
 												tbody += "<td>"+ (Number(i)+1) +"</td>";
 												tbody += "<td>유사</td>";
-												tbody += "<td>"+ data.multiList[i].platPlc + " " + data.multiList[i].bun
-													+ "-" + data.multiList[i].ji +"</td>";
-												tbody += "<td>"+ data.multiList[i].bldNm +"</td>";
-												tbody += "<td>"+ data.multiList[i].floor + " 층</td>";
-												tbody += "<td>"+ data.multiList[i].totArea +"</td>";
-												tbody += "<td>알수없음</td>";
-												tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.multiList[i].tradePrice +"만원</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
+													+ "-" + data.addrMap.multiList[i].ji +"</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
+												if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
+													tbody += "<td>무</td>";
+												} else { 
+													tbody += "<td>유</td>";
+												}
+												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+												tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
 												tbody += "</tr>";
 											}
 										}
@@ -532,6 +540,8 @@ function searchAddr(){
 										$("#multi_body").html(tbody);
 										
 										modal('modal_multi');
+									} else if(data.landKind == "4"){
+										
 									}
 								} else {
 									alert("주소반환실패");
