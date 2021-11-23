@@ -14,7 +14,7 @@
     
     #modal_land {
         display: none;
-        width: 400px;
+        width: 750px;
         height: 800px;
         padding: 20px 60px;
         background-color: #fefefe;
@@ -102,15 +102,15 @@ window.onhashchange = function() {
 
 
 <!-- table 토지-->
-<div class="table-group" id="div_land" style="display:none">
-	<tr class="table-close">
+<div class="table-group" id="modal_land" style="display:none">
+	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
-    </tr>
+    </tr> -->
     <table class="table-title">
 	  <tbody>
 		<tr>
 		  <td class="background-s">추정시세</td>
-          <td>126,000,000 원</td>
+          <td id="land_price">126,000,000 원</td>
 		</tr>
 	  </tbody>
 	</table>
@@ -119,33 +119,33 @@ window.onhashchange = function() {
 	  <tbody>
 		<tr>
 		  <td class="background-s">토지가격</td>
-		  <td>33,853,600,000 원</td>
+		  <td id="land_l_price">33,853,600,000 원</td>
 		  <td class="background-s">건물가격</td>
-          <td>1,763,100,000 원</td>
+          <td id="land_s_price">1,763,100,000 원</td>
 		</tr>
 		<tr>
 		  <td class="background-s">토지단가</td>
-		  <td>74,191,000 원<br>개별공시지가대비 257%</td>
+		  <td id="land_ll_price">74,191,000 원<br>개별공시지가대비 257%</td>
 		  <td class="background-s">건물단가</td>
-          <td>655,000 원</td>
+          <td id="land_ss_price">655,000 원</td>
 		</tr>
 		<tr>
 		  <td class="background-s">토지면적</td>
-		  <td>456.30 ㎡</td>
+		  <td id="land_l_area">456.30 ㎡</td>
 		  <td class="background-s">건물연면적</td>
-          <td>2,6990.22 ㎡</td>
+          <td id="land_s_area">2,6990.22 ㎡</td>
 		</tr>
         <tr>
 		  <td class="background-s">용도지역</td>
-		  <td>일반상업지역</td>
+		  <td id="land_purps">일반상업지역</td>
 		  <td class="background-s">주용도</td>
-          <td>제2종근생활시설</td>
+          <td id="land_main_purps">제2종근생활시설</td>
 		</tr>
         <tr>
 		  <td class="background-s">2021년 공시지가</td>
 		  <td>28,920,000 원</td>
 		  <td class="background-s">사용승인일</td>
-          <td>2003-06-20</td>
+          <td id="land_ss_day">2003-06-20</td>
 		</tr>
 	  </tbody>
 	</table>
@@ -166,45 +166,10 @@ window.onhashchange = function() {
             <th>거래금액</th>
 		</tr>
 	  </thead>
-	  <tbody>
-		<tr>
-		  <td>1</td>
-		  <td>매우<br>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr>
-		<tr>
-		  <td>2</td>
-		  <td>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr>
-		<tr>
-		  <td>3</td>
-		  <td>매우<br>유사</td>
-		  <td>강동구 강동 565-1</td>
-		  <td>리안아파트</td>
-		  <td>16층</td>
-		  <td>59.94</td>
-		  <td>유</td>
-		  <td>1991.09</td>
-		  <td>2003.01</td>
-          <td>79,500만원</td>  
-		</tr>
+	  <tbody id="land_body">
 	  </tbody>
 	</table>
+	<a class="modal_close_btn">닫기</a>
 </div> <!----- table-group end ----->
 
 
@@ -516,6 +481,9 @@ function searchAddr(){
 											tbody += "데이터가 없습니다.";
 											tbody += "</td>";
 										} else {
+											if(data_len >= 3){
+												data_len = 3;
+											}
 											for(var i=0; i<3; i++) {
 												tbody += "<tr>";
 												tbody += "<td>"+ (Number(i)+1) +"</td>";
@@ -540,8 +508,65 @@ function searchAddr(){
 										$("#multi_body").html(tbody);
 										
 										modal('modal_multi');
-									} else if(data.landKind == "4"){
+									} else if(data.landKind == "0" || data.landKind == "1"){
+										$("#land_price").text(data.addrMap.price);
+										if(data.landKind == "0"){
+											$("#land_l_price").text(data.addrMap.price);
+											$("#land_s_price").text("-");
+												var price = "";
+												price += data.addrMap.landSPrice + " 원<br>";
+												price += "개별공시지가대비 ";
+												price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
+												price += "%";
+											$("#land_ll_price").text(price);
+											$("#land_ss_price").text("-");
+											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
+											$("#land_s_area").text("-");
+											$("#land_purps").text(data.addrMap.apmmNvLandOpen.spfc1);
+											$("#land_main_purps").text("-");
+										} else {
 										
+										}
+										$("#land_ss_day").text("2003-05-06");
+										
+										// 바디구현
+										var tbody = "";
+										
+										var data_len = data.addrMap.landList.length;
+										if(data_len == 0){
+											tbody += "<td colspan='10'>";
+											tbody += "데이터가 없습니다.";
+											tbody += "</td>";
+										} else {
+											if(data_len >= 3){
+												data_len = 3;
+											}
+											for(var i=0; i<data_len; i++) {
+												tbody += "<tr>";
+												tbody += "<td>"+ (Number(i)+1) +"</td>";
+												tbody += "<td>유사</td>";
+												tbody += "<td>"+ data.addrMap.landList[i].platPlc + " " + data.addrMap.landList[i].bun
+													+ "-" + data.addrMap.landList[i].ji +"</td>";
+												
+												if(data.landKind == "0"){
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>"+ data.addrMap.landList[i].tradePrice +"만원</td>";
+												} else {
+												
+												}
+												
+												tbody += "</tr>";
+											}
+										}
+										
+										$("#land_body").html(tbody);
+										
+										modal('modal_land');
 									}
 								} else {
 									alert("주소반환실패");

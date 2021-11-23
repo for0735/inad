@@ -6,8 +6,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,17 +56,28 @@ public class mapController {
 		
 		int result = 0;
 		String addr = request.getParameter("addr"); 
-		String[] addrList200 = request.getParameterValues("addrList200");
+		String[] addrTempList200 = request.getParameterValues("addrList200");
 		//String[] addrList500 = request.getParameterValues("addrList500");
 		
-		//중복제거
-        int length = StringUtil.remove_Duplicate_Elements(addrList200, addrList200.length);
+		//중복제거 (List이용)-----------------------------------------------------------
+		ArrayList<String> arrayList = new ArrayList<>();
+
+        for(String item : addrTempList200){
+            if(!arrayList.contains(item))
+                arrayList.add(item);
+        }
         
+        String[] addrList200 = new String[arrayList.size()];
+        for(int i=0; i<arrayList.size(); i++) {
+        	addrList200[i] =  arrayList.get(i);
+        }
+        //---------------------------------------------------------------------------
+		
 		String[] addrArr = addr.split(" ");
 		addrArr[0] = siNameReturn(addrArr[0]);
 		
-		String[][] addrArr200 = new String[length][];
-		for(int i=0; i<length; i++) {
+		String[][] addrArr200 = new String[addrList200.length][];
+		for(int i=0; i<addrList200.length; i++) {
 			String[] temp = addrList200[i].split(" ");
 			addrArr200[i] = new String[temp.length];
 			for(int j=0; j<temp.length; j++) {
@@ -72,6 +85,9 @@ public class mapController {
 			}
 			addrArr200[i][0] = siNameReturn(addrArr200[i][0]);
 		}
+		
+		System.out.println("시작");
+		System.out.println(Arrays.deepToString(addrArr200));
 		
 		//중복제거
 		/*int length = StringUtil.remove_Duplicate_Elements(addrList500, addrList500.length);
@@ -138,8 +154,14 @@ public class mapController {
 			addrMap.put("multiList", (ArrayList<DataMulti>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
-			price = getLandPrice(addrMap, addrArr200);
-			System.out.println("가격은??? : " + price);
+			List<ApmmNvLandOpen> br = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
+			ApmmNvLandOpen apmmNvLandOpen = new ApmmNvLandOpen();
+			apmmNvLandOpen = br.get(0);
+			
+			addrMap = getLandPrice(addrMap, addrArr200);
+			addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
+			addrMap.put("multiList", (ArrayList<DataLand>)addrMap.get("multiList"));
+			System.out.println("가격은??? : " + addrMap.get("price").toString());
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
 			List<BrTitleInfo> br = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 
@@ -348,11 +370,9 @@ public class mapController {
 	
 	// 아파트 가격산정
 	public Map<String, Object> getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
-		String price = "";
 		List<DataApt> dataAptList = new ArrayList<DataApt>();
 		dataAptList = mapService.getAptPrice(addrMap);
 		
-		long temp = 0;
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
 		for(int i=0; i<dataAptList.size(); i++) {
@@ -384,11 +404,9 @@ public class mapController {
 	
 	// 오피스텔 가격산정
 	public Map<String, Object> getOfficePrice(Map<String, Object> addrMap, String area) throws Exception {
-		String price = "";
 		List<DataOffice> dataOfficeList = new ArrayList<DataOffice>();
 		dataOfficeList = mapService.getOfficePrice(addrMap);
 		
-		long temp = 0;
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
 		for(int i=0; i<dataOfficeList.size(); i++) {
@@ -420,7 +438,6 @@ public class mapController {
 	
 	// 연립다세대 가격산정
 	public Map<String, Object> getMultiPrice(Map<String, Object> addrMap, String area, String[][] addrArr) throws Exception {
-		String price = "";
 		List<DataMulti> dataMultiList = new ArrayList<DataMulti>();
 		
 		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
@@ -478,10 +495,12 @@ public class mapController {
 	}
 	
 	// 토지 가격산정
-	public String getLandPrice(Map<String, Object> addrMap, String[][] addrArr) throws Exception {
-		String price = "";
+	public Map<String, Object> getLandPrice(Map<String, Object> addrMap, String[][] addrArr) throws Exception {
 		List<ApmmNvLandOpen> br = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
 		List<DataLand> dataLandList = new ArrayList<DataLand>();
+		
+		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
+		tempAddrMap = addrMap;
 		
 		ApmmNvLandOpen apmm = new ApmmNvLandOpen();
 		apmm = br.get(0);
@@ -492,24 +511,24 @@ public class mapController {
 		for(int i=0; i<addrArr.length; i++) {
 			System.out.println(i);
 			System.out.println(Arrays.deepToString(addrArr[i]));
-			if(Arrays.deepToString(addrArr[i]).equals("")) {
+			if(Arrays.deepToString(addrArr[i]).equals("[]")) {
 				continue;
 			}
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
 			
-			addrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
 			
-			if(addrMap.get("mapKind").toString().equals("0")) {
+			if(tempAddrMap.get("mapKind").toString().equals("0")) {
 				List<DataLand> tempDataLandList = new ArrayList<DataLand>();
 				
-				tempDataLandList = mapService.getLandPrice(addrMap);
+				tempDataLandList = mapService.getLandPrice(tempAddrMap);
 				
 				System.out.println("사이즈  " + tempDataLandList.size());
 				for(int j=0; j<tempDataLandList.size(); j++) {
 					// 용도지역은 완전일치, 이용상황은 조건부일치
 					if(apmm.getSpfc1().equals(tempDataLandList.get(j).getMainPurpsAreaCd()) || apmm.getSpfc2().equals(tempDataLandList.get(j).getMainPurpsAreaCd())) {
-						List<ApmmNvLandOpen> tempBr = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
+						List<ApmmNvLandOpen> tempBr = (ArrayList<ApmmNvLandOpen>)tempAddrMap.get("apmmNvLandOpenList");
 						
 						if(tempBr.size() != 0 && StringUtil.BLandUse(apmm.getLandUse(), tempBr.get(0).getLandUse())) {
 							dataLandList.add(tempDataLandList.get(j));
@@ -522,7 +541,13 @@ public class mapController {
 		long temp = 0;
 		float areaF = Float.parseFloat(apmm.getParea());
 		List<Float> tempF = new ArrayList<Float>();
+		System.out.println("============================================================");
+		System.out.println("사이즈  " + dataLandList.size());
+		
 		for(int i=0; i<dataLandList.size(); i++) {
+			System.out.println(dataLandList.get(i).getPlatPlc());
+			System.out.println(dataLandList.get(i).getJi());
+			System.out.println(dataLandList.get(i).getBun());
 			int tradePrice = Integer.parseInt(dataLandList.get(i).getTradePrice());
 			float totArea = Float.parseFloat(dataLandList.get(i).getAgreementArea());
 			
@@ -540,9 +565,11 @@ public class mapController {
 		System.out.println(Math.round(sum));
 		System.out.println(tempF.size());
 		System.out.println((Math.round(sum/tempF.size() * areaF)));
-		price = Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000";
+		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
+		addrMap.put("landSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
+		addrMap.put("landList", dataLandList);
 		
-		return price;
+		return addrMap;
 	}
 	
 	// 구분상가 가격산정
@@ -565,7 +592,7 @@ public class mapController {
 		for(int i=0; i<addrArr.length; i++) {
 			System.out.println(i);
 			System.out.println(Arrays.deepToString(addrArr[i]));
-			if(Arrays.deepToString(addrArr[i]).equals("")) {
+			if(Arrays.deepToString(addrArr[i]).equals("[]")) {
 				continue;
 			}
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
