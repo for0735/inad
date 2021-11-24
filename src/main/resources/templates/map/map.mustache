@@ -509,8 +509,8 @@ function searchAddr(){
 										
 										modal('modal_multi');
 									} else if(data.landKind == "0" || data.landKind == "1"){
-										$("#land_price").text(data.addrMap.price);
 										if(data.landKind == "0"){
+											$("#land_price").text(data.addrMap.price);
 											$("#land_l_price").text(data.addrMap.price);
 											$("#land_s_price").text("-");
 												var price = "";
@@ -525,7 +525,20 @@ function searchAddr(){
 											$("#land_purps").text(data.addrMap.apmmNvLandOpen.spfc1);
 											$("#land_main_purps").text("-");
 										} else {
-										
+											$("#land_price").text(data.addrMap.price + data.addrMap.price);
+											$("#land_l_price").text(data.addrMap.price);
+											$("#land_s_price").text(data.addrMap.price);
+												var price = "";
+												price += data.addrMap.landSPrice + " 원<br>";
+												price += "개별공시지가대비 ";
+												price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
+												price += "%";
+											$("#land_ll_price").text(price);
+											$("#land_ss_price").text(price);
+											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
+											$("#land_s_area").text(data.addrMap.brTitleInfo.totArea + "㎡");
+											$("#land_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
+											$("#land_main_purps").text(data.addrMap.brTitleInfo.etcPurps);
 										}
 										$("#land_ss_day").text("2003-05-06");
 										
@@ -557,7 +570,13 @@ function searchAddr(){
 													tbody += "<td>-</td>";
 													tbody += "<td>"+ data.addrMap.landList[i].tradePrice +"만원</td>";
 												} else {
-												
+													tbody += "<td>-</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>"+ data.addrMap.landList[i].totArea +"</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.landList[i].tradePrice +"만원</td>";
 												}
 												
 												tbody += "</tr>";
