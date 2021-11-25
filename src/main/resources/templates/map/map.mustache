@@ -453,7 +453,7 @@ function searchAddr(){
 								closeModal('loading_modal');
 					
 								if(data.result == 1){
-									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3"){
+									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3" || data.landKind == "5"){
 										$("#multi_price").text(data.addrMap.price);
 										$("#multi_s_price").text(data.addrMap.multiSPrice);
 										$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);

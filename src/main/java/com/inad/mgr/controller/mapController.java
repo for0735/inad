@@ -27,6 +27,7 @@ import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataCommercial;
 import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -174,7 +175,16 @@ public class mapController {
 			addrMap.put("landList", (ArrayList<DataAlone>)addrMap.get("landList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
 		} else if(addrMap.get("mapKind").toString().equals("5")) { // 구분상가
-			price = getCommercialPrice(addrMap);
+			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
+			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
+			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
+			brExposInfoArea = br.get(0);
+
+			addrMap = getCommercialPrice(addrMap, br.get(0).getArea(), addrArr200);
+			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brTitleInfo", brTitle.get(0));
+			addrMap.put("multiList", (ArrayList<DataCommercial>)addrMap.get("multiList"));
+			System.out.println("가격은??? : " + addrMap.get("price").toString());
 		}
 		
 		
@@ -504,6 +514,62 @@ public class mapController {
 		return addrMap;
 	}
 	
+	// 구분상가 가격산정
+	public Map<String, Object> getCommercialPrice(Map<String, Object> addrMap, String area, String[][] addrArr) throws Exception {
+		List<DataCommercial> dataCommercialList = new ArrayList<DataCommercial>();
+		
+		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
+		tempAddrMap = addrMap;
+		
+		//실거래 리스트 가져오기
+		//가져온 주소를 바탕으로 구분상가 뽑아냄. 그래서 addrMap에 추가
+		for(int i=0; i<addrArr.length; i++) {
+			System.out.println(i);
+			System.out.println(Arrays.deepToString(addrArr[i]));
+			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
+			
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			
+			if(tempAddrMap.get("mapKind").toString().equals("5")) {
+				List<DataCommercial> tempDataCommercialList = new ArrayList<DataCommercial>();
+				
+				tempDataCommercialList = mapService.getCommercialPrice(tempAddrMap);
+				
+				System.out.println("사이즈  " + tempDataCommercialList.size());
+				for(int j=0; j<tempDataCommercialList.size(); j++) {
+					dataCommercialList.add(tempDataCommercialList.get(j));
+				}
+			}
+		}
+		
+		long temp = 0;
+		List<Float> tempF = new ArrayList<Float>();
+		float areaF = Float.parseFloat(area);
+		for(int i=0; i<dataCommercialList.size(); i++) {
+			int tradePrice = Integer.parseInt(dataCommercialList.get(i).getTradePrice());
+			float totArea = Float.parseFloat(dataCommercialList.get(i).getTotArea());
+			
+			tempF.add(tradePrice/totArea);
+		}
+		
+		float sum = 0.0f;
+		for(int i=0; i<tempF.size(); i++) {
+			sum = sum + tempF.get(i);
+			System.out.println(tempF.get(i));
+		}
+		
+		System.out.println("--------------------------");
+		System.out.println(sum);
+		System.out.println(Math.round(sum));
+		System.out.println(tempF.size());
+		System.out.println((Math.round(sum/tempF.size() * areaF)));
+		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
+		addrMap.put("multiSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
+		addrMap.put("multiList", dataCommercialList);
+		
+		return addrMap;
+	}
+	
 	// 토지 가격산정
 	public Map<String, Object> getLandPrice(Map<String, Object> addrMap, String[][] addrArr) throws Exception {
 		List<ApmmNvLandOpen> br = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
@@ -575,15 +641,6 @@ public class mapController {
 		addrMap.put("landList", dataLandList);
 		
 		return addrMap;
-	}
-	
-	// 구분상가 가격산정
-	public String getCommercialPrice(Map<String, Object> addrMap) {
-		String price = "";
-		
-		
-		
-		return price;
 	}
 	
 	// 단독다가구 가격산정

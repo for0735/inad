@@ -12,6 +12,7 @@ import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataCommercial;
 import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -34,6 +35,7 @@ public interface MapMapper {
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception;
 	public List<DataOffice> getOfficePrice(Map addrMap) throws Exception;
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception;
+	public List<DataCommercial> getCommercialPrice(Map addrMap) throws Exception;
 	public List<DataAlone> getAlonePrice(Map addrMap) throws Exception;
 	public List<DataLand> getLandPrice(Map addrMap) throws Exception;
 }

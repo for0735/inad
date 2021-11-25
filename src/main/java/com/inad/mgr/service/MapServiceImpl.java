@@ -15,6 +15,7 @@ import com.inad.mgr.domain.BrTitleInfo;
 import com.inad.mgr.domain.CdInfo;
 import com.inad.mgr.domain.data.DataAlone;
 import com.inad.mgr.domain.data.DataApt;
+import com.inad.mgr.domain.data.DataCommercial;
 import com.inad.mgr.domain.data.DataLand;
 import com.inad.mgr.domain.data.DataMulti;
 import com.inad.mgr.domain.data.DataOffice;
@@ -138,6 +139,12 @@ public class MapServiceImpl implements MapService {
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception {
 		
 		return mapMapper.getMultiPrice(addrMap);
+	}
+
+	@Override
+	public List<DataCommercial> getCommercialPrice(Map addrMap) throws Exception {
+
+		return mapMapper.getCommercialPrice(addrMap);
 	}
 
 	@Override
