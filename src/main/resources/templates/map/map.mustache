@@ -175,6 +175,7 @@ window.onhashchange = function() {
 
 <!-- table 집합-->
 <div class="table-group" id="modal_multi" style="display:none">
+<!--<div class="table-group">-->
 	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
     </tr> -->
@@ -189,6 +190,18 @@ window.onhashchange = function() {
 
 	<table class="table">
 	  <tbody>
+		<tr>
+		  <td class="background-s">동/호수</td>
+		  <td colspan="3">
+				<select id="multi_dong">
+				</select>
+				
+				<select id="multi_ho">
+				</select>
+				
+				<button class="table-close">검색</button>
+		  </td>
+		</tr>
 		<tr>
 		  <td class="background-s">㎡ 단가</td>
 		  <td id="multi_s_price">9,052,000 원</td>
@@ -502,6 +515,16 @@ function searchAddr(){
 												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
 												tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
 												tbody += "</tr>";
+											}
+											
+											var jdata = data.addrMap.brExposInfoAreaList;
+											
+											if(jdata.length == 0){
+												$("#multi_dong").append("<option value=''>선택</option>");
+											} else {
+												for(var i=0; i<jdata.length; i++){
+													$("#multi_dong").append("<option value='" + jdata[i].dongNm + "'>" + jdata[i].dongNm + "</option>");
+												}
 											}
 										}
 										

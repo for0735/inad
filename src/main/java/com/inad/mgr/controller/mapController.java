@@ -129,6 +129,7 @@ public class mapController {
 			
 			addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
 			addrMap.put("multiList", (ArrayList<DataApt>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
@@ -140,6 +141,7 @@ public class mapController {
 
 			addrMap = getOfficePrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
 			addrMap.put("multiList", (ArrayList<DataOffice>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
@@ -151,6 +153,7 @@ public class mapController {
 
 			addrMap = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
 			addrMap.put("multiList", (ArrayList<DataMulti>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
@@ -182,6 +185,7 @@ public class mapController {
 
 			addrMap = getCommercialPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
+			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
 			addrMap.put("multiList", (ArrayList<DataCommercial>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
