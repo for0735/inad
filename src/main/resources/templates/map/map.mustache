@@ -174,8 +174,8 @@ window.onhashchange = function() {
 
 
 <!-- table 집합-->
-<div class="table-group" id="modal_multi" style="display:none">
-<!--<div class="table-group">-->
+<!--<div class="table-group" id="modal_multi" style="display:none">-->
+<div class="table-group">
 	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
     </tr> -->
@@ -268,6 +268,41 @@ $(document).ready(function() {
 	$("#search").keypress(function (e) {
 		if (e.which == 13){
         	searchAddr();
+		}
+	});
+	
+	console.log("??");
+	console.log(jdata);
+	jdata.length = 0
+	jdata.freeze ;
+	for (const [key, value] of Object.entries(jdata)) {
+		key.delete;
+		value.delete;
+	}
+	console.log(jdata);
+	
+	
+
+	if(jdata.name.length == 0){
+		$("#multi_dong").append("<option value=''>선택</option>");
+	} else {
+		for(var i=0; i<jdata.name.length; i++){
+			$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
+		}
+	}
+
+	
+	$("#multi_dong").change(function(){
+		$("#multi_ho").empty();
+		var dong = this.value;
+		
+		for (const [key, value] of Object.entries(jdata)) {
+			console.log(key, value);
+			if(key == dong ) {
+				for(var i=0; i<value.length; i++){
+					$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+				}
+			}
 		}
 	});
 });
@@ -517,13 +552,14 @@ function searchAddr(){
 												tbody += "</tr>";
 											}
 											
-											var jdata = data.addrMap.brExposInfoAreaList;
 											
-											if(jdata.length == 0){
+											//map.js에 있는 const에 객체 담기
+											
+											if(jdata.name.length == 0){
 												$("#multi_dong").append("<option value=''>선택</option>");
 											} else {
-												for(var i=0; i<jdata.length; i++){
-													$("#multi_dong").append("<option value='" + jdata[i].dongNm + "'>" + jdata[i].dongNm + "</option>");
+												for(var i=0; i<jdata.name.length; i++){
+													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
 												}
 											}
 										}
