@@ -271,17 +271,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	console.log("??");
-	console.log(jdata);
-	jdata.length = 0
-	jdata.freeze ;
-	for (const [key, value] of Object.entries(jdata)) {
-		key.delete;
-		value.delete;
-	}
-	console.log(jdata);
-	
-	
+	emptyObject(jdata);
 
 	if(jdata.name.length == 0){
 		$("#multi_dong").append("<option value=''>선택</option>");
@@ -736,6 +726,11 @@ function closeModal(id){
 
 	$("#modalId").remove();
 	modal.style.display = 'none';
+}
+
+//오브젝트 비우기
+function emptyObject(obj) {
+	Object.keys(obj).forEach(key => delete obj[key])
 }
 
 </script>
