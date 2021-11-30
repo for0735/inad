@@ -174,8 +174,8 @@ window.onhashchange = function() {
 
 
 <!-- table 집합-->
-<!--<div class="table-group" id="modal_multi" style="display:none">-->
-<div class="table-group">
+<div class="table-group" id="modal_multi" style="display:none">
+<!--<div class="table-group">-->
 	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
     </tr> -->
@@ -271,8 +271,9 @@ $(document).ready(function() {
 		}
 	});
 	
+	/*
 	emptyObject(jdata);
-
+	
 	if(jdata.name.length == 0){
 		$("#multi_dong").append("<option value=''>선택</option>");
 	} else {
@@ -280,15 +281,14 @@ $(document).ready(function() {
 			$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
 		}
 	}
-
+	*/
 	
 	$("#multi_dong").change(function(){
 		$("#multi_ho").empty();
 		var dong = this.value;
 		
 		for (const [key, value] of Object.entries(jdata)) {
-			console.log(key, value);
-			if(key == dong ) {
+			if(key == dong) {
 				for(var i=0; i<value.length; i++){
 					$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
 				}
@@ -542,9 +542,54 @@ function searchAddr(){
 												tbody += "</tr>";
 											}
 											
+											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+											emptyObject(jdata);
 											
-											//map.js에 있는 const에 객체 담기
+											var tempName = new Array();
+											var name = new Array();
 											
+											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+												if(dongNm == "") 
+													dongNm = '-';
+											
+												tempName.push(dongNm);
+											}
+											
+											name[0] = tempName[0];
+											for(var i=0; i<tempName.length; i++){
+												var temp = 1;
+											
+												for(var j=0; j<name.length; j++){
+													if(tempName[i] == name[j]){
+														temp = 0;
+													}
+												}
+												
+												if(temp == 1)
+													name.push(tempName[i]);
+											}
+											
+											jdata.name = name;
+											
+											for(var i=0; i<name.length; i++){
+												var tempHo = new Array();
+												
+												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+													var dongNm = name[i];
+													if(dongNm == '-')
+														dongNm = "";
+													
+													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+													}
+												}
+												
+												jdata[name[i]] = tempHo;
+											}
+
+											$("#multi_dong").empty();
+
 											if(jdata.name.length == 0){
 												$("#multi_dong").append("<option value=''>선택</option>");
 											} else {
@@ -552,6 +597,22 @@ function searchAddr(){
 													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
 												}
 											}
+											
+											$("#multi_ho").empty();
+											var dong = name[0];
+											
+											for (const [key, value] of Object.entries(jdata)) {
+												if(key == dong) {
+													for(var i=0; i<value.length; i++){
+														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+													}
+												}
+											}
+											
+											console.log("jdata");
+											console.log(jdata);
+											
+											//----------------------------------------------------------------------------------------
 										}
 										
 										$("#multi_body").html(tbody);

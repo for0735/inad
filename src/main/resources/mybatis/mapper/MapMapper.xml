@@ -40,6 +40,7 @@
 		AND sigunguCd = #{siCode}
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY dongNm ASC, hoNm ASC 
 	</select>
 	
 	<select id="getAptPrice" resultType="com.inad.mgr.domain.data.DataApt" parameterType="hashMap">
