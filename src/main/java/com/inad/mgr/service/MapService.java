@@ -30,6 +30,9 @@ public interface MapService {
 	//필지종류 구하기(집합일경우)
 	public List<BrExposInfoArea> getKindZipHap(String[] argv, CdInfo cdInfo, String addr) throws Exception;
 	
+	//필지종류 구하기(집합일경우) (상세)
+	public List<BrExposInfoArea> getKindDeepZipHap(String addr, String siCode, String bun, String ji, String dong, String ho) throws Exception;
+	
 	//------------------------------- 가격산정로직 -----------------------------------------------
 	//아파트 가격산정
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception;

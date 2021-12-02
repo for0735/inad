@@ -124,6 +124,12 @@ public class MapServiceImpl implements MapService {
 	}
 
 	@Override
+	public List<BrExposInfoArea> getKindDeepZipHap(String addr, String siCode, String bun, String ji, String dong, String ho) throws Exception {
+		
+		return mapMapper.getKindDeepZipHap(addr, siCode, bun, ji, dong, ho);
+	}
+
+	@Override
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception {
 
 		return mapMapper.getAptPrice(addrMap);

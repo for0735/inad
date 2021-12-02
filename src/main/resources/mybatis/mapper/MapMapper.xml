@@ -42,6 +42,17 @@
 		AND ji = #{ji}
 		ORDER BY dongNm ASC, hoNm ASC 
 	</select>
+
+	<select id="getKindDeepZipHap" resultType="com.inad.mgr.domain.BrExposInfoArea">
+		SELECT * FROM tb_brExposInfoArea
+		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		AND sigunguCd = #{siCode}
+		AND bun = #{bun}
+		AND ji = #{ji}
+		AND dongNm = #{dong}
+		AND hoNm = #{ho}
+		ORDER BY dongNm ASC, hoNm ASC 
+	</select>
 	
 	<select id="getAptPrice" resultType="com.inad.mgr.domain.data.DataApt" parameterType="hashMap">
 		SELECT * FROM tb_dataApt

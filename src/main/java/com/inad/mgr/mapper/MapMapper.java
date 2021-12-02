@@ -32,6 +32,9 @@ public interface MapMapper {
 	public List<BrExposInfoArea> getKindZipHap(@Param("addr") String addr, @Param("siCode") String siCode, @Param("bun") String bun,
 			@Param("ji") String ji) throws Exception;
 	
+	public List<BrExposInfoArea> getKindDeepZipHap(@Param("addr") String addr, @Param("siCode") String siCode, @Param("bun") String bun,
+			@Param("ji") String ji, @Param("dong") String dong, @Param("ho") String ho) throws Exception;
+	
 	public List<DataApt> getAptPrice(Map addrMap) throws Exception;
 	public List<DataOffice> getOfficePrice(Map addrMap) throws Exception;
 	public List<DataMulti> getMultiPrice(Map addrMap) throws Exception;

@@ -57,6 +57,8 @@ public class mapController {
 		
 		int result = 0;
 		String addr = request.getParameter("addr"); 
+		String dong = request.getParameter("dong"); 
+		String ho = request.getParameter("ho"); 
 		String[] addrTempList200 = request.getParameterValues("addrList200");
 		//String[] addrList500 = request.getParameterValues("addrList500");
 		
@@ -125,8 +127,15 @@ public class mapController {
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
-			brExposInfoArea = br.get(0);
 			
+			List<BrExposInfoArea> tempBr = new ArrayList<BrExposInfoArea>();
+			
+			if(dong.equals("") && ho.equals("")) {
+				brExposInfoArea = br.get(0);
+			} else {
+				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
+				brExposInfoArea = tempBr.get(0);
+			}
 			addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
@@ -137,8 +146,15 @@ public class mapController {
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
-			brExposInfoArea = br.get(0);
 
+			List<BrExposInfoArea> tempBr = new ArrayList<BrExposInfoArea>();
+			
+			if(dong.equals("") && ho.equals("")) {
+				brExposInfoArea = br.get(0);
+			} else {
+				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
+				brExposInfoArea = tempBr.get(0);
+			}
 			addrMap = getOfficePrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
@@ -149,8 +165,15 @@ public class mapController {
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
-			brExposInfoArea = br.get(0);
 
+			List<BrExposInfoArea> tempBr = new ArrayList<BrExposInfoArea>();
+			
+			if(dong.equals("") && ho.equals("")) {
+				brExposInfoArea = br.get(0);
+			} else {
+				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
+				brExposInfoArea = tempBr.get(0);
+			}
 			addrMap = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
@@ -181,8 +204,15 @@ public class mapController {
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			BrExposInfoArea brExposInfoArea = new BrExposInfoArea();
-			brExposInfoArea = br.get(0);
 
+			List<BrExposInfoArea> tempBr = new ArrayList<BrExposInfoArea>();
+			
+			if(dong.equals("") && ho.equals("")) {
+				brExposInfoArea = br.get(0);
+			} else {
+				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
+				brExposInfoArea = tempBr.get(0);
+			}
 			addrMap = getCommercialPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
@@ -321,28 +351,33 @@ public class mapController {
 				addrMap.put("mapKind", "2");
 				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
 				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
+				addrMap.put("siCode", brExposInfoAreaList.get(0).getSigunguCd());
 				System.out.println("이거아파트임");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("02002") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("02003")
 					|| brExposInfoAreaList.get(0).getMainPurpsCd().equals("02000")) {
 				addrMap.put("mapKind", "3");
 				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
 				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
+				addrMap.put("siCode", brExposInfoAreaList.get(0).getSigunguCd());
 				System.out.println("이거연립다세대임");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("01000") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("01001")
 					|| brExposInfoAreaList.get(0).getMainPurpsCd().equals("01002") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("01003")) {
 				addrMap.put("mapKind", "1");
 				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
 				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
+				addrMap.put("siCode", brExposInfoAreaList.get(0).getSigunguCd());
 				System.out.println("이거토지건물인데...?");
 			} else if(brExposInfoAreaList.get(0).getMainPurpsCd().equals("14200") || brExposInfoAreaList.get(0).getMainPurpsCd().equals("14202")) {
 				addrMap.put("mapKind", "4");
 				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
 				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
+				addrMap.put("siCode", brExposInfoAreaList.get(0).getSigunguCd());
 				System.out.println("이거오피스텔임");
 			} else {
 				addrMap.put("mapKind", "5");
 				addrMap.put("bun", brExposInfoAreaList.get(0).getBun());
 				addrMap.put("ji", brExposInfoAreaList.get(0).getJi());
+				addrMap.put("siCode", brExposInfoAreaList.get(0).getSigunguCd());
 				System.out.println("이거구분상가임");
 			}
 		} else {

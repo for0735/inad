@@ -8,8 +8,6 @@ name : ['a동','b동','c동'],
 'c동' : [1,2,3,4]
 };
 
-
-
 /*
 	원의 방정식을 이용하여 주소 가져오는 js파일
 	(x-5)^2+(y-5)^2=25 ---> 지름길이 10일때 가정
@@ -182,4 +180,8 @@ function getAddrList500(obj){
     }
     
     return addrList500;
+}
+
+function searchHo(){
+	
 }

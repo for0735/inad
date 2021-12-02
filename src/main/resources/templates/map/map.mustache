@@ -4,7 +4,7 @@
 <style>
     #loading_modal {
         display: none;
-        width: 400px;
+        width: 750px;
         height: 800px;
         padding: 20px 60px;
         background-color: #fefefe;
@@ -14,8 +14,6 @@
     
     #modal_land {
         display: none;
-        width: 750px;
-        height: 800px;
         padding: 20px 60px;
         background-color: #fefefe;
         border: 1px solid #888;
@@ -24,8 +22,6 @@
     
     #modal_multi {
         display: none;
-        width: 750px;
-        height: 800px;
         padding: 20px 60px;
         background-color: #fefefe;
         border: 1px solid #888;
@@ -76,6 +72,8 @@ window.onhashchange = function() {
 </div>
 
 <!-- <button id="popup_open_btn">팝업창 띄어 줘염</button> -->
+
+<input class="hidden" type="text" id="tempAddr">
 
 <!-- loading -->
 <div class="loading1" id="loading_modal" style="display:none">
@@ -199,7 +197,7 @@ window.onhashchange = function() {
 				<select id="multi_ho">
 				</select>
 				
-				<button class="table-close">검색</button>
+				<button onClick="closeModal('modal_multi'); searchAddr($('#multi_dong').val(), $('#multi_ho').val())" class="table-close">검색</button>
 		  </td>
 		</tr>
 		<tr>
@@ -442,8 +440,17 @@ function displayCenterInfo(result, status) {
 }
 
 // 주소로 좌표를 검색합니다
-function searchAddr(){
+function searchAddr(dong, ho){
+
 	deleteMark();
+	
+	if(dong == "-" || dong == "" || dong == undefined){
+		dong = "";
+	}
+	
+	if(ho == "" || ho == undefined) {
+		ho = "";
+	}
 	
 	var addr = $("#search").val();
 
@@ -478,12 +485,15 @@ function searchAddr(){
 		            const addrList200 = getAddrList200(coords);
 		            //const addrList500 = getAddrList500(coords);
 		            
+		            $("#tempAddr").val(result[0].address.address_name);
+		            
 		            setTimeout(function() { 
 			            $.ajax({
 							type: 'POST',
 							url: '/map/search',
 							traditional : true,
-							data: {"addr": result[0].address.address_name, "addrList200" : addrList200
+							data: {"addr": result[0].address.address_name, "addrList200" : addrList200,
+							 "dong" : dong, "ho" : ho
 							 },
 							dataType: 'JSON',
 							success: function(data)
@@ -492,18 +502,18 @@ function searchAddr(){
 					
 								if(data.result == 1){
 									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3" || data.landKind == "5"){
-										$("#multi_price").text(data.addrMap.price);
-										$("#multi_s_price").text(data.addrMap.multiSPrice);
-										$("#multi_ss_price").text(data.addrMap.multiSPrice * 3.3);
+										$("#multi_price").text(priceToString(data.addrMap.price) + "원");
+										$("#multi_s_price").text(priceToString(data.addrMap.multiSPrice) + "원");
+										$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
 										$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
 										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
-										$("#multi_s_day").text(data.addrMap.brTitleInfo.crtnDay);
-										$("#multi_ss_day").text(data.addrMap.brTitleInfo.useAprDay);
-										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + " / " +data.addrMap.brTitleInfo.grndFlrCnt);
+										$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
+										$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
+										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
 										if(data.addrMap.brTitleInfo.hhldCnt == "0"){
 											$("#multi_ctn").text("-");
 										} else {
-											$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt);
+											$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
 										}
 										$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
 										$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
@@ -599,10 +609,10 @@ function searchAddr(){
 											}
 											
 											$("#multi_ho").empty();
-											var dong = name[0];
+											var dongArr = name[0];
 											
 											for (const [key, value] of Object.entries(jdata)) {
-												if(key == dong) {
+												if(key == dongArr) {
 													for(var i=0; i<value.length; i++){
 														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
 													}
@@ -617,14 +627,22 @@ function searchAddr(){
 										
 										$("#multi_body").html(tbody);
 										
+										if(dong != ""){
+											$("#multi_dong").val(dong).prop("selected", true);
+										}
+										
+										if(ho != "") {
+											$("#multi_ho").val(ho).prop("selected", true);
+										}
+										
 										modal('modal_multi');
 									} else if(data.landKind == "0" || data.landKind == "1"){
 										if(data.landKind == "0"){
-											$("#land_price").text(data.addrMap.price);
-											$("#land_l_price").text(data.addrMap.price);
+											$("#land_price").text(priceToString(data.addrMap.price) + "원");
+											$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
 											$("#land_s_price").text("-");
 												var price = "";
-												price += data.addrMap.landSPrice + " 원<br>";
+												price += priceToString(data.addrMap.landSPrice) + " 원<br>";
 												price += "개별공시지가대비 ";
 												price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
 												price += "%";
@@ -635,9 +653,9 @@ function searchAddr(){
 											$("#land_purps").text(data.addrMap.apmmNvLandOpen.spfc1);
 											$("#land_main_purps").text("-");
 										} else {
-											$("#land_price").text(data.addrMap.price + data.addrMap.price);
-											$("#land_l_price").text(data.addrMap.price);
-											$("#land_s_price").text(data.addrMap.price);
+											$("#land_price").text(priceToString(Number(data.addrMap.price) + Number(data.addrMap.price)) + "원");
+											$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
+											$("#land_s_price").text(priceToString(data.addrMap.price) + "원");
 												var price = "";
 												price += data.addrMap.landSPrice + " 원<br>";
 												price += "개별공시지가대비 ";
@@ -792,6 +810,19 @@ function closeModal(id){
 //오브젝트 비우기
 function emptyObject(obj) {
 	Object.keys(obj).forEach(key => delete obj[key])
+}
+
+//1000단위표시
+function priceToString(price) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+//연월일표시
+function changeDateString(date){
+    var year = date.substr(0,4);
+    var month = date.substr(4,2);
+    var day = date.substr(6,2);
+    return year + "-" + month + "-" + day;
 }
 
 </script>
