@@ -55,7 +55,7 @@ public class mapController {
     public ModelAndView search(HttpServletRequest request, Model model, RedirectAttributes rttr, Principal prin) throws Exception {
 		ModelAndView mv = new ModelAndView("jsonView");
 		
-		int result = 0;
+		int result = 1;
 		String addr = request.getParameter("addr"); 
 		String dong = request.getParameter("dong"); 
 		String ho = request.getParameter("ho"); 
@@ -118,11 +118,8 @@ public class mapController {
 		
 		
 		// 여기서부터 가격산정
-		String price = "";
-		
 		if(addrMap.get("mapKind").toString().equals("98") || addrMap.get("mapKind").toString().equals("99")) {
 			// 비정상 코드
-			mv.addObject("price", price);
 		} else if(addrMap.get("mapKind").toString().equals("2")) { // 아파트
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
@@ -132,11 +129,12 @@ public class mapController {
 			
 			if(dong.equals("") && ho.equals("")) {
 				brExposInfoArea = br.get(0);
+				addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			} else {
 				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
 				brExposInfoArea = tempBr.get(0);
+				addrMap = getAptPrice(addrMap, tempBr.get(0).getArea());
 			}
-			addrMap = getAptPrice(addrMap, br.get(0).getArea());
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -151,11 +149,13 @@ public class mapController {
 			
 			if(dong.equals("") && ho.equals("")) {
 				brExposInfoArea = br.get(0);
+				addrMap = getOfficePrice(addrMap, br.get(0).getArea());
 			} else {
 				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
 				brExposInfoArea = tempBr.get(0);
+				addrMap = getOfficePrice(addrMap, tempBr.get(0).getArea());
 			}
-			addrMap = getOfficePrice(addrMap, br.get(0).getArea());
+			
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -170,11 +170,12 @@ public class mapController {
 			
 			if(dong.equals("") && ho.equals("")) {
 				brExposInfoArea = br.get(0);
+				addrMap = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			} else {
 				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
 				brExposInfoArea = tempBr.get(0);
+				addrMap = getMultiPrice(addrMap, tempBr.get(0).getArea(), addrArr200);
 			}
-			addrMap = getMultiPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -183,23 +184,32 @@ public class mapController {
 		} else if(addrMap.get("mapKind").toString().equals("0")) { // 토지
 			List<ApmmNvLandOpen> brApmm = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
 			ApmmNvLandOpen apmmNvLandOpen = new ApmmNvLandOpen();
-			apmmNvLandOpen = brApmm.get(0);
-			
-			addrMap = getLandPrice(addrMap, addrArr200);
-			addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
-			addrMap.put("landList", (ArrayList<DataLand>)addrMap.get("landList"));
-			System.out.println("가격은??? : " + addrMap.get("price").toString());
+			if(brApmm != null) {
+				apmmNvLandOpen = brApmm.get(0);
+				
+				addrMap = getLandPrice(addrMap, addrArr200);
+				addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
+				addrMap.put("landList", (ArrayList<DataLand>)addrMap.get("landList"));
+				System.out.println("가격은??? : " + addrMap.get("price").toString());
+			} else {
+				result = 2;
+			}
 		} else if(addrMap.get("mapKind").toString().equals("1")) { // 단독다가구
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
 			List<ApmmNvLandOpen> brApmm = (ArrayList<ApmmNvLandOpen>)addrMap.get("apmmNvLandOpenList");
 			ApmmNvLandOpen apmmNvLandOpen = new ApmmNvLandOpen();
-			apmmNvLandOpen = brApmm.get(0);
+			
+			if(brApmm != null) {
+				apmmNvLandOpen = brApmm.get(0);
 
-			addrMap = getAlonePrice(addrMap, brTitle.get(0).getPlatArea(), addrArr200);
-			addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
-			addrMap.put("brTitleInfo", brTitle.get(0));
-			addrMap.put("landList", (ArrayList<DataAlone>)addrMap.get("landList"));
-			System.out.println("가격은??? : " + addrMap.get("price").toString());
+				addrMap = getAlonePrice(addrMap, brTitle.get(0).getPlatArea(), addrArr200);
+				addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
+				addrMap.put("brTitleInfo", brTitle.get(0));
+				addrMap.put("landList", (ArrayList<DataAlone>)addrMap.get("landList"));
+				System.out.println("가격은??? : " + addrMap.get("price").toString());
+			} else {
+				result = 2;
+			}
 		} else if(addrMap.get("mapKind").toString().equals("5")) { // 구분상가
 			List<BrExposInfoArea> br = (ArrayList<BrExposInfoArea>)addrMap.get("brExposInfoAreaList");
 			List<BrTitleInfo> brTitle = (ArrayList<BrTitleInfo>)addrMap.get("brTitleInfoList");
@@ -209,25 +219,17 @@ public class mapController {
 			
 			if(dong.equals("") && ho.equals("")) {
 				brExposInfoArea = br.get(0);
+				addrMap = getCommercialPrice(addrMap, br.get(0).getArea(), addrArr200);
 			} else {
 				tempBr = mapService.getKindDeepZipHap(addrMap.get("addr").toString(), addrMap.get("siCode").toString(), addrMap.get("bun").toString(), addrMap.get("ji").toString(),  dong, ho);
 				brExposInfoArea = tempBr.get(0);
+				addrMap = getCommercialPrice(addrMap, tempBr.get(0).getArea(), addrArr200);
 			}
-			addrMap = getCommercialPrice(addrMap, br.get(0).getArea(), addrArr200);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
 			addrMap.put("multiList", (ArrayList<DataCommercial>)addrMap.get("multiList"));
 			System.out.println("가격은??? : " + addrMap.get("price").toString());
-		}
-		
-		
-		
-		try {
-			System.out.println(addr);
-			result = 1;
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		/*
@@ -240,7 +242,6 @@ public class mapController {
 		 */
 		mv.addObject("addrMap", addrMap);
 		mv.addObject("landKind", addrMap.get("mapKind").toString());
-		mv.addObject("price", price);
 		mv.addObject("result", result);
 		return mv;
 	}
