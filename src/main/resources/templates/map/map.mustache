@@ -73,7 +73,7 @@ window.onhashchange = function() {
 
 <!-- <button id="popup_open_btn">팝업창 띄어 줘염</button> -->
 
-<input class="hidden" type="text" id="tempAddr">
+<input type="hidden" type="text" id="tempAddr">
 
 <!-- loading -->
 <div class="loading1" id="loading_modal" style="display:none">
@@ -416,78 +416,79 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												tbody += "</tr>";
 											}
 											
-											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
-											emptyObject(jdata);
-											
-											var tempName = new Array();
-											var name = new Array();
-											
-											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
-												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
-												if(dongNm == "") 
-													dongNm = '-';
-											
-												tempName.push(dongNm);
-											}
-											
-											name[0] = tempName[0];
-											for(var i=0; i<tempName.length; i++){
-												var temp = 1;
-											
-												for(var j=0; j<name.length; j++){
-													if(tempName[i] == name[j]){
-														temp = 0;
-													}
-												}
-												
-												if(temp == 1)
-													name.push(tempName[i]);
-											}
-											
-											jdata.name = name;
-											
-											for(var i=0; i<name.length; i++){
-												var tempHo = new Array();
-												
-												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
-													var dongNm = name[i];
-													if(dongNm == '-')
-														dongNm = "";
-													
-													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
-														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
-													}
-												}
-												
-												jdata[name[i]] = tempHo;
-											}
-
-											$("#multi_dong").empty();
-
-											if(jdata.name.length == 0){
-												$("#multi_dong").append("<option value=''>선택</option>");
-											} else {
-												for(var i=0; i<jdata.name.length; i++){
-													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
-												}
-											}
-											
-											$("#multi_ho").empty();
-											var dongArr = name[0];
-											
-											for (const [key, value] of Object.entries(jdata)) {
-												if(key == dongArr) {
-													for(var i=0; i<value.length; i++){
-														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
-													}
-												}
-											}
-											
-											console.log("jdata");
-											console.log(jdata);
-											
-											//----------------------------------------------------------------------------------------
 										}
+										
+										//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+										emptyObject(jdata);
+										
+										var tempName = new Array();
+										var name = new Array();
+										
+										for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+											var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+											if(dongNm == "") 
+												dongNm = '-';
+										
+											tempName.push(dongNm);
+										}
+										
+										name[0] = tempName[0];
+										for(var i=0; i<tempName.length; i++){
+											var temp = 1;
+										
+											for(var j=0; j<name.length; j++){
+												if(tempName[i] == name[j]){
+													temp = 0;
+												}
+											}
+											
+											if(temp == 1)
+												name.push(tempName[i]);
+										}
+										
+										jdata.name = name;
+										
+										for(var i=0; i<name.length; i++){
+											var tempHo = new Array();
+											
+											for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+												var dongNm = name[i];
+												if(dongNm == '-')
+													dongNm = "";
+												
+												if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+													tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+												}
+											}
+											
+											jdata[name[i]] = tempHo;
+										}
+
+										$("#multi_dong").empty();
+
+										if(jdata.name.length == 0){
+											$("#multi_dong").append("<option value=''>선택</option>");
+										} else {
+											for(var i=0; i<jdata.name.length; i++){
+												$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
+											}
+										}
+										
+										$("#multi_ho").empty();
+										var dongArr = name[0];
+										
+										for (const [key, value] of Object.entries(jdata)) {
+											if(key == dongArr) {
+												for(var i=0; i<value.length; i++){
+													$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+												}
+											}
+										}
+										
+										console.log("jdata");
+										console.log(jdata);
+										
+										//----------------------------------------------------------------------------------------
 										
 										$("#multi_body").html(tbody);
 										
@@ -538,12 +539,12 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
 												$("#land_s_price").text(priceToString(data.addrMap.price) + "원");
 													var price = "";
-													price += data.addrMap.landSPrice + " 원<br>";
+													price += priceToString(data.addrMap.landSPrice) + " 원<br>";
 													price += "개별공시지가대비 ";
 													price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
 													price += "%";
-												$("#land_ll_price").text(priceToString(price) + "원");
-												$("#land_ss_price").text(priceToString(price) + "원");
+												$("#land_ll_price").text(price);
+												$("#land_ss_price").text(price);
 											}
 											
 											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
@@ -785,78 +786,79 @@ function searchAddr(dong, ho){
 												tbody += "</tr>";
 											}
 											
-											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
-											emptyObject(jdata);
-											
-											var tempName = new Array();
-											var name = new Array();
-											
-											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
-												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
-												if(dongNm == "") 
-													dongNm = '-';
-											
-												tempName.push(dongNm);
-											}
-											
-											name[0] = tempName[0];
-											for(var i=0; i<tempName.length; i++){
-												var temp = 1;
-											
-												for(var j=0; j<name.length; j++){
-													if(tempName[i] == name[j]){
-														temp = 0;
-													}
-												}
-												
-												if(temp == 1)
-													name.push(tempName[i]);
-											}
-											
-											jdata.name = name;
-											
-											for(var i=0; i<name.length; i++){
-												var tempHo = new Array();
-												
-												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
-													var dongNm = name[i];
-													if(dongNm == '-')
-														dongNm = "";
-													
-													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
-														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
-													}
-												}
-												
-												jdata[name[i]] = tempHo;
-											}
-
-											$("#multi_dong").empty();
-
-											if(jdata.name.length == 0){
-												$("#multi_dong").append("<option value=''>선택</option>");
-											} else {
-												for(var i=0; i<jdata.name.length; i++){
-													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
-												}
-											}
-											
-											$("#multi_ho").empty();
-											var dongArr = name[0];
-											
-											for (const [key, value] of Object.entries(jdata)) {
-												if(key == dongArr) {
-													for(var i=0; i<value.length; i++){
-														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
-													}
-												}
-											}
-											
-											console.log("jdata");
-											console.log(jdata);
-											
-											//----------------------------------------------------------------------------------------
 										}
+										
+										//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+										emptyObject(jdata);
+										
+										var tempName = new Array();
+										var name = new Array();
+										
+										for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+											var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+											if(dongNm == "") 
+												dongNm = '-';
+										
+											tempName.push(dongNm);
+										}
+										
+										name[0] = tempName[0];
+										for(var i=0; i<tempName.length; i++){
+											var temp = 1;
+										
+											for(var j=0; j<name.length; j++){
+												if(tempName[i] == name[j]){
+													temp = 0;
+												}
+											}
+											
+											if(temp == 1)
+												name.push(tempName[i]);
+										}
+										
+										jdata.name = name;
+										
+										for(var i=0; i<name.length; i++){
+											var tempHo = new Array();
+											
+											for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+												var dongNm = name[i];
+												if(dongNm == '-')
+													dongNm = "";
+												
+												if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+													tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+												}
+											}
+											
+											jdata[name[i]] = tempHo;
+										}
+
+										$("#multi_dong").empty();
+
+										if(jdata.name.length == 0){
+											$("#multi_dong").append("<option value=''>선택</option>");
+										} else {
+											for(var i=0; i<jdata.name.length; i++){
+												$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
+											}
+										}
+										
+										$("#multi_ho").empty();
+										var dongArr = name[0];
+										
+										for (const [key, value] of Object.entries(jdata)) {
+											if(key == dongArr) {
+												for(var i=0; i<value.length; i++){
+													$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+												}
+											}
+										}
+										
+										console.log("jdata");
+										console.log(jdata);
+										
+										//----------------------------------------------------------------------------------------
 										
 										$("#multi_body").html(tbody);
 										
@@ -907,12 +909,12 @@ function searchAddr(dong, ho){
 												$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
 												$("#land_s_price").text(priceToString(data.addrMap.price) + "원");
 													var price = "";
-													price += data.addrMap.landSPrice + " 원<br>";
+													price += priceToString(data.addrMap.landSPrice) + " 원<br>";
 													price += "개별공시지가대비 ";
 													price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
 													price += "%";
-												$("#land_ll_price").text(priceToString(price) + "원");
-												$("#land_ss_price").text(priceToString(price) + "원");
+												$("#land_ll_price").text(price);
+												$("#land_ss_price").text(price);
 											}
 											
 											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
