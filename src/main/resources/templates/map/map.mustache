@@ -359,148 +359,246 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 					
 								if(data.result == 1){
 									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3" || data.landKind == "5"){
-										if(data.addrMap.price == "00000"){
-											$("#multi_price").text("본 물건은 산정이 어렵습니다");
+										if(dong == "" && ho == ""){
+											$("#multi_price").text("동, 호수를 선택 후 검색해주세요");
 											$("#multi_s_price").text("-");
 											$("#multi_ss_price").text("-");
-										} else {
-											$("#multi_price").text(priceToString(data.addrMap.price) + "원");
-											$("#multi_s_price").text(priceToString(data.addrMap.multiSPrice) + "원");
-											$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
-										}
-									
-										$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
-										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
-										$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
-										$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
-										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
-										if(data.addrMap.brTitleInfo.hhldCnt == "0"){
+											$("#multi_area").text("-");
+											$("#multi_s_area").text("-");
+											$("#multi_s_day").text("-");
+											$("#multi_ss_day").text("-");
+											$("#multi_flr").text("-");
 											$("#multi_ctn").text("-");
-										} else {
-											$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
-										}
-										$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
-										$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
-										$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
-										
-										
-										// 바디구현
-										var tbody = "";
-										
-										var data_len = data.addrMap.multiList.length;
-										if(data_len == 0){
-											tbody += "<td colspan='10'>";
-											tbody += "데이터가 없습니다.";
-											tbody += "</td>";
-										} else {
-											if(data_len >= 3){
-												data_len = 3;
+											$("#multi_dong_purps").text("-");
+											$("#multi_ho_purps").text("-");
+											$("#multi_strct").text("-");
+											
+											
+											// 바디구현
+											var tbody = "";
+											
+											
+											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+											emptyObject(jdata);
+											
+											var tempName = new Array();
+											var name = new Array();
+											
+											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+												if(dongNm == "") 
+													dongNm = '-';
+											
+												tempName.push(dongNm);
 											}
-											for(var i=0; i<3; i++) {
-												tbody += "<tr>";
-												tbody += "<td>"+ (Number(i)+1) +"</td>";
-												tbody += "<td>유사</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
-													+ "-" + data.addrMap.multiList[i].ji +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
-												if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
-													tbody += "<td>무</td>";
-												} else { 
-													tbody += "<td>유</td>";
+											
+											name[0] = tempName[0];
+											for(var i=0; i<tempName.length; i++){
+												var temp = 1;
+											
+												for(var j=0; j<name.length; j++){
+													if(tempName[i] == name[j]){
+														temp = 0;
+													}
 												}
-												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
-												tbody += "</tr>";
-											}
-											
-										}
-										
-										//map.js에 있는 const에 객체 담기------------------------------------------------------------------
-										emptyObject(jdata);
-										
-										var tempName = new Array();
-										var name = new Array();
-										
-										for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
-											var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
-											if(dongNm == "") 
-												dongNm = '-';
-										
-											tempName.push(dongNm);
-										}
-										
-										name[0] = tempName[0];
-										for(var i=0; i<tempName.length; i++){
-											var temp = 1;
-										
-											for(var j=0; j<name.length; j++){
-												if(tempName[i] == name[j]){
-													temp = 0;
-												}
-											}
-											
-											if(temp == 1)
-												name.push(tempName[i]);
-										}
-										
-										jdata.name = name;
-										
-										for(var i=0; i<name.length; i++){
-											var tempHo = new Array();
-											
-											for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
-												var dongNm = name[i];
-												if(dongNm == '-')
-													dongNm = "";
 												
-												if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
-													tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+												if(temp == 1)
+													name.push(tempName[i]);
+											}
+											
+											jdata.name = name;
+											
+											for(var i=0; i<name.length; i++){
+												var tempHo = new Array();
+												
+												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+													var dongNm = name[i];
+													if(dongNm == '-')
+														dongNm = "";
+													
+													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+													}
+												}
+												
+												jdata[name[i]] = tempHo;
+											}
+	
+											$("#multi_dong").empty();
+	
+											if(jdata.name.length == 0){
+												$("#multi_dong").append("<option value=''>선택</option>");
+											} else {
+												for(var i=0; i<jdata.name.length; i++){
+													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
 												}
 											}
 											
-											jdata[name[i]] = tempHo;
-										}
-
-										$("#multi_dong").empty();
-
-										if(jdata.name.length == 0){
-											$("#multi_dong").append("<option value=''>선택</option>");
-										} else {
-											for(var i=0; i<jdata.name.length; i++){
-												$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
-											}
-										}
-										
-										$("#multi_ho").empty();
-										var dongArr = name[0];
-										
-										for (const [key, value] of Object.entries(jdata)) {
-											if(key == dongArr) {
-												for(var i=0; i<value.length; i++){
-													$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+											$("#multi_ho").empty();
+											var dongArr = name[0];
+											
+											for (const [key, value] of Object.entries(jdata)) {
+												if(key == dongArr) {
+													for(var i=0; i<value.length; i++){
+														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+													}
 												}
 											}
+											
+											//----------------------------------------------------------------------------------------
+											
+											$("#multi_body").html(tbody);
+											
+											if(dong != ""){
+												$("#multi_dong").val(dong).prop("selected", true);
+											}
+											
+											if(ho != "") {
+												$("#multi_ho").val(ho).prop("selected", true);
+											}
+											
+											modal('modal_multi');
+										} else {
+											if(data.addrMap.price == "00000"){
+												$("#multi_price").text("본 물건은 산정이 어렵습니다");
+												$("#multi_s_price").text("-");
+												$("#multi_ss_price").text("-");
+											} else {
+												$("#multi_price").text(priceToString(data.addrMap.price) + "원");
+												$("#multi_s_price").text(priceToString(data.addrMap.multiSPrice) + "원");
+												$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
+											}
+										
+											$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
+											$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+											$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
+											$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
+											$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
+											if(data.addrMap.brTitleInfo.hhldCnt == "0"){
+												$("#multi_ctn").text("-");
+											} else {
+												$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
+											}
+											$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
+											$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
+											$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
+											
+											
+											// 바디구현
+											var tbody = "";
+											
+											var data_len = data.addrMap.multiList.length;
+											if(data_len == 0){
+												tbody += "<td colspan='10'>";
+												tbody += "데이터가 없습니다.";
+												tbody += "</td>";
+											} else {
+												if(data_len >= 3){
+													data_len = 3;
+												}
+												for(var i=0; i<3; i++) {
+													tbody += "<tr>";
+													tbody += "<td>"+ (Number(i)+1) +"</td>";
+													tbody += "<td>유사</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
+														+ "-" + data.addrMap.multiList[i].ji +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
+													if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
+														tbody += "<td>무</td>";
+													} else { 
+														tbody += "<td>유</td>";
+													}
+													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
+													tbody += "</tr>";
+												}
+												
+											}
+											
+											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+											emptyObject(jdata);
+											
+											var tempName = new Array();
+											var name = new Array();
+											
+											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+												if(dongNm == "") 
+													dongNm = '-';
+											
+												tempName.push(dongNm);
+											}
+											
+											name[0] = tempName[0];
+											for(var i=0; i<tempName.length; i++){
+												var temp = 1;
+											
+												for(var j=0; j<name.length; j++){
+													if(tempName[i] == name[j]){
+														temp = 0;
+													}
+												}
+												
+												if(temp == 1)
+													name.push(tempName[i]);
+											}
+											
+											jdata.name = name;
+											
+											for(var i=0; i<name.length; i++){
+												var tempHo = new Array();
+												
+												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+													var dongNm = name[i];
+													if(dongNm == '-')
+														dongNm = "";
+													
+													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+													}
+												}
+												
+												jdata[name[i]] = tempHo;
+											}
+	
+											$("#multi_dong").empty();
+	
+											if(jdata.name.length == 0){
+												$("#multi_dong").append("<option value=''>선택</option>");
+											} else {
+												for(var i=0; i<jdata.name.length; i++){
+													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
+												}
+											}
+											
+											$("#multi_ho").empty();
+											var dongArr = name[0];
+											
+											for (const [key, value] of Object.entries(jdata)) {
+												if(key == dongArr) {
+													for(var i=0; i<value.length; i++){
+														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+													}
+												}
+											}
+											
+											//----------------------------------------------------------------------------------------
+											
+											$("#multi_body").html(tbody);
+											
+											if(dong != ""){
+												$("#multi_dong").val(dong).prop("selected", true);
+											}
+											
+											if(ho != "") {
+												$("#multi_ho").val(ho).prop("selected", true);
+											}
+											
+											modal('modal_multi');
 										}
-										
-										console.log("jdata");
-										console.log(jdata);
-										
-										//----------------------------------------------------------------------------------------
-										
-										$("#multi_body").html(tbody);
-										
-										if(dong != ""){
-											$("#multi_dong").val(dong).prop("selected", true);
-										}
-										
-										if(ho != "") {
-											$("#multi_ho").val(ho).prop("selected", true);
-										}
-										
-										modal('modal_multi');
 									} else if(data.landKind == "0" || data.landKind == "1"){
 										if(data.landKind == "0"){
 											if(data.addrMap.price == "00000"){
@@ -729,148 +827,246 @@ function searchAddr(dong, ho){
 					
 								if(data.result == 1){
 									if(data.landKind == "2" || data.landKind == "4" || data.landKind == "3" || data.landKind == "5"){
-										if(data.addrMap.price == "00000"){
-											$("#multi_price").text("본 물건은 산정이 어렵습니다");
+										if(dong == "" && ho == ""){
+											$("#multi_price").text("동, 호수를 선택 후 검색해주세요");
 											$("#multi_s_price").text("-");
 											$("#multi_ss_price").text("-");
-										} else {
-											$("#multi_price").text(priceToString(data.addrMap.price) + "원");
-											$("#multi_s_price").text(priceToString(data.addrMap.multiSPrice) + "원");
-											$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
-										}
-									
-										$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
-										$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
-										$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
-										$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
-										$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
-										if(data.addrMap.brTitleInfo.hhldCnt == "0"){
+											$("#multi_area").text("-");
+											$("#multi_s_area").text("-");
+											$("#multi_s_day").text("-");
+											$("#multi_ss_day").text("-");
+											$("#multi_flr").text("-");
 											$("#multi_ctn").text("-");
-										} else {
-											$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
-										}
-										$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
-										$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
-										$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
-										
-										
-										// 바디구현
-										var tbody = "";
-										
-										var data_len = data.addrMap.multiList.length;
-										if(data_len == 0){
-											tbody += "<td colspan='10'>";
-											tbody += "데이터가 없습니다.";
-											tbody += "</td>";
-										} else {
-											if(data_len >= 3){
-												data_len = 3;
+											$("#multi_dong_purps").text("-");
+											$("#multi_ho_purps").text("-");
+											$("#multi_strct").text("-");
+											
+											
+											// 바디구현
+											var tbody = "";
+											
+											
+											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+											emptyObject(jdata);
+											
+											var tempName = new Array();
+											var name = new Array();
+											
+											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+												if(dongNm == "") 
+													dongNm = '-';
+											
+												tempName.push(dongNm);
 											}
-											for(var i=0; i<3; i++) {
-												tbody += "<tr>";
-												tbody += "<td>"+ (Number(i)+1) +"</td>";
-												tbody += "<td>유사</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
-													+ "-" + data.addrMap.multiList[i].ji +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
-												if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
-													tbody += "<td>무</td>";
-												} else { 
-													tbody += "<td>유</td>";
+											
+											name[0] = tempName[0];
+											for(var i=0; i<tempName.length; i++){
+												var temp = 1;
+											
+												for(var j=0; j<name.length; j++){
+													if(tempName[i] == name[j]){
+														temp = 0;
+													}
 												}
-												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-												tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
-												tbody += "</tr>";
-											}
-											
-										}
-										
-										//map.js에 있는 const에 객체 담기------------------------------------------------------------------
-										emptyObject(jdata);
-										
-										var tempName = new Array();
-										var name = new Array();
-										
-										for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
-											var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
-											if(dongNm == "") 
-												dongNm = '-';
-										
-											tempName.push(dongNm);
-										}
-										
-										name[0] = tempName[0];
-										for(var i=0; i<tempName.length; i++){
-											var temp = 1;
-										
-											for(var j=0; j<name.length; j++){
-												if(tempName[i] == name[j]){
-													temp = 0;
-												}
-											}
-											
-											if(temp == 1)
-												name.push(tempName[i]);
-										}
-										
-										jdata.name = name;
-										
-										for(var i=0; i<name.length; i++){
-											var tempHo = new Array();
-											
-											for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
-												var dongNm = name[i];
-												if(dongNm == '-')
-													dongNm = "";
 												
-												if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
-													tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+												if(temp == 1)
+													name.push(tempName[i]);
+											}
+											
+											jdata.name = name;
+											
+											for(var i=0; i<name.length; i++){
+												var tempHo = new Array();
+												
+												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+													var dongNm = name[i];
+													if(dongNm == '-')
+														dongNm = "";
+													
+													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+													}
+												}
+												
+												jdata[name[i]] = tempHo;
+											}
+	
+											$("#multi_dong").empty();
+	
+											if(jdata.name.length == 0){
+												$("#multi_dong").append("<option value=''>선택</option>");
+											} else {
+												for(var i=0; i<jdata.name.length; i++){
+													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
 												}
 											}
 											
-											jdata[name[i]] = tempHo;
-										}
-
-										$("#multi_dong").empty();
-
-										if(jdata.name.length == 0){
-											$("#multi_dong").append("<option value=''>선택</option>");
-										} else {
-											for(var i=0; i<jdata.name.length; i++){
-												$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
-											}
-										}
-										
-										$("#multi_ho").empty();
-										var dongArr = name[0];
-										
-										for (const [key, value] of Object.entries(jdata)) {
-											if(key == dongArr) {
-												for(var i=0; i<value.length; i++){
-													$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+											$("#multi_ho").empty();
+											var dongArr = name[0];
+											
+											for (const [key, value] of Object.entries(jdata)) {
+												if(key == dongArr) {
+													for(var i=0; i<value.length; i++){
+														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+													}
 												}
 											}
+											
+											//----------------------------------------------------------------------------------------
+											
+											$("#multi_body").html(tbody);
+											
+											if(dong != ""){
+												$("#multi_dong").val(dong).prop("selected", true);
+											}
+											
+											if(ho != "") {
+												$("#multi_ho").val(ho).prop("selected", true);
+											}
+											
+											modal('modal_multi');
+										} else {
+											if(data.addrMap.price == "00000"){
+												$("#multi_price").text("본 물건은 산정이 어렵습니다");
+												$("#multi_s_price").text("-");
+												$("#multi_ss_price").text("-");
+											} else {
+												$("#multi_price").text(priceToString(data.addrMap.price) + "원");
+												$("#multi_s_price").text(priceToString(data.addrMap.multiSPrice) + "원");
+												$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
+											}
+										
+											$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
+											$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+											$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
+											$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
+											$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
+											if(data.addrMap.brTitleInfo.hhldCnt == "0"){
+												$("#multi_ctn").text("-");
+											} else {
+												$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
+											}
+											$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
+											$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
+											$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
+											
+											
+											// 바디구현
+											var tbody = "";
+											
+											var data_len = data.addrMap.multiList.length;
+											if(data_len == 0){
+												tbody += "<td colspan='10'>";
+												tbody += "데이터가 없습니다.";
+												tbody += "</td>";
+											} else {
+												if(data_len >= 3){
+													data_len = 3;
+												}
+												for(var i=0; i<3; i++) {
+													tbody += "<tr>";
+													tbody += "<td>"+ (Number(i)+1) +"</td>";
+													tbody += "<td>유사</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
+														+ "-" + data.addrMap.multiList[i].ji +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
+													if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
+														tbody += "<td>무</td>";
+													} else { 
+														tbody += "<td>유</td>";
+													}
+													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+													tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
+													tbody += "</tr>";
+												}
+												
+											}
+											
+											//map.js에 있는 const에 객체 담기------------------------------------------------------------------
+											emptyObject(jdata);
+											
+											var tempName = new Array();
+											var name = new Array();
+											
+											for(var i=0; i<data.addrMap.brExposInfoAreaList.length; i++){
+												var dongNm = data.addrMap.brExposInfoAreaList[i].dongNm;
+												if(dongNm == "") 
+													dongNm = '-';
+											
+												tempName.push(dongNm);
+											}
+											
+											name[0] = tempName[0];
+											for(var i=0; i<tempName.length; i++){
+												var temp = 1;
+											
+												for(var j=0; j<name.length; j++){
+													if(tempName[i] == name[j]){
+														temp = 0;
+													}
+												}
+												
+												if(temp == 1)
+													name.push(tempName[i]);
+											}
+											
+											jdata.name = name;
+											
+											for(var i=0; i<name.length; i++){
+												var tempHo = new Array();
+												
+												for(var j=0; j<data.addrMap.brExposInfoAreaList.length; j++){
+													var dongNm = name[i];
+													if(dongNm == '-')
+														dongNm = "";
+													
+													if(dongNm == data.addrMap.brExposInfoAreaList[j].dongNm && data.addrMap.brExposInfoAreaList[j].exposPubuseGbCd == 1){
+														tempHo.push(data.addrMap.brExposInfoAreaList[j].hoNm);
+													}
+												}
+												
+												jdata[name[i]] = tempHo;
+											}
+	
+											$("#multi_dong").empty();
+	
+											if(jdata.name.length == 0){
+												$("#multi_dong").append("<option value=''>선택</option>");
+											} else {
+												for(var i=0; i<jdata.name.length; i++){
+													$("#multi_dong").append("<option value='" + jdata.name[i] + "'>" + jdata.name[i] + "</option>");
+												}
+											}
+											
+											$("#multi_ho").empty();
+											var dongArr = name[0];
+											
+											for (const [key, value] of Object.entries(jdata)) {
+												if(key == dongArr) {
+													for(var i=0; i<value.length; i++){
+														$("#multi_ho").append("<option value='" + value[i] + "'>" + value[i] + "</option>");
+													}
+												}
+											}
+											
+											//----------------------------------------------------------------------------------------
+											
+											$("#multi_body").html(tbody);
+											
+											if(dong != ""){
+												$("#multi_dong").val(dong).prop("selected", true);
+											}
+											
+											if(ho != "") {
+												$("#multi_ho").val(ho).prop("selected", true);
+											}
+											
+											modal('modal_multi');
 										}
-										
-										console.log("jdata");
-										console.log(jdata);
-										
-										//----------------------------------------------------------------------------------------
-										
-										$("#multi_body").html(tbody);
-										
-										if(dong != ""){
-											$("#multi_dong").val(dong).prop("selected", true);
-										}
-										
-										if(ho != "") {
-											$("#multi_ho").val(ho).prop("selected", true);
-										}
-										
-										modal('modal_multi');
 									} else if(data.landKind == "0" || data.landKind == "1"){
 										if(data.landKind == "0"){
 											if(data.addrMap.price == "00000"){
