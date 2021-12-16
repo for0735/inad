@@ -469,8 +469,18 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
 											}
 										
-											$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
-											$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
+											var brMainArea = 0;
+											var brSubArea = 0;
+											for(var i=0; i<data.addrMap.tempBr.length; i++){
+												if(data.addrMap.tempBr[i].exposPubuseGbCd == 1){
+													brMainArea = brMainArea + data.addrMap.tempBr[i].area;
+												} else {
+													brSubArea = brSubArea + data.addrMap.tempBr[i].area;
+												}
+											}										
+											
+											$("#multi_area").text(brMainArea + "㎡ / " + parseFloat(brMainArea)/3.3 + " (3.3㎡)");
+											$("#multi_s_area").text(brSubArea);
 											$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
 											$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
 											$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
@@ -937,20 +947,42 @@ function searchAddr(dong, ho){
 												$("#multi_ss_price").text(priceToString(data.addrMap.multiSPrice * 3.3) + "원");
 											}
 										
-											$("#multi_area").text(data.addrMap.brTitleInfo.totArea + "㎡ / " + parseFloat(data.addrMap.brTitleInfo.totArea)/3.3 + " (3.3㎡)");
-											$("#multi_s_area").text(data.addrMap.brExposInfoArea.area);
-											$("#multi_s_day").text(changeDateString(data.addrMap.brTitleInfo.crtnDay));
-											$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
-											$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNo + "층 / " +data.addrMap.brTitleInfo.grndFlrCnt);
-											if(data.addrMap.brTitleInfo.hhldCnt == "0"){
-												$("#multi_ctn").text("-");
-											} else {
-												$("#multi_ctn").text(data.addrMap.brTitleInfo.hhldCnt + "세대");
-											}
-											$("#multi_dong_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
-											$("#multi_ho_purps").text(data.addrMap.brTitleInfo.etcPurps);
-											$("#multi_strct").text(data.addrMap.brExposInfoArea.strctCdNm);
+											var brMainArea = 0;
+											var brSubArea = 0;
+											var brStrctCdNm = "";
+											for(var i=0; i<data.addrMap.tempBr.length; i++){
+												if(data.addrMap.tempBr[i].exposPubuseGbCd == 1){
+													brMainArea = parseFloat(brMainArea) + parseFloat(data.addrMap.tempBr[i].area);
+													brStrctCdNm = data.addrMap.tempBr[i].strctCdNm;
+												} else {
+													brSubArea = parseFloat(brSubArea) + parseFloat(data.addrMap.tempBr[i].area);
+												}
+											}										
 											
+											$("#multi_area").text(brMainArea.toFixed(2) + "㎡ / " + (parseFloat(brMainArea)/3.3).toFixed(2) + " (3.3㎡)");
+											$("#multi_s_area").text(brSubArea.toFixed(2) + "㎡");
+											$("#multi_s_day").text("-");
+											$("#multi_ss_day").text(changeDateString(data.addrMap.brTitleInfo.useAprDay));
+											
+											for(var i=0; i<data.addrMap.br.length; i++){
+												var tempDong = dong;
+												if(tempDong == "-"){
+													tempDong = "";
+												}
+												
+												if(tempDong == data.addrMap.br[i].dongNm){
+													$("#multi_flr").text(data.addrMap.brExposInfoArea.flrNoNm + " / " +data.addrMap.br[i].grndFlrCnt + "층");
+													if(data.addrMap.br[i].hhldCnt == "0"){
+														$("#multi_ctn").text("-");
+													} else {
+														$("#multi_ctn").text(data.addrMap.br[i].hhldCnt + " 세대");
+													}
+													$("#multi_dong_purps").text(data.addrMap.br[i].mainPurpsCdNm);
+													$("#multi_ho_purps").text(data.addrMap.br[i].etcPurps);
+												}
+											}
+
+											$("#multi_strct").text(brStrctCdNm);											
 											
 											// 바디구현
 											var tbody = "";
@@ -968,19 +1000,20 @@ function searchAddr(dong, ho){
 													tbody += "<tr>";
 													tbody += "<td>"+ (Number(i)+1) +"</td>";
 													tbody += "<td>유사</td>";
-													tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
-														+ "-" + data.addrMap.multiList[i].ji +"</td>";
+													
+													if(data.addrMap.multiList[i].ji == "0000"){
+														tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun;
+													} else {
+														tbody += "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].bun
+															+ "-" + data.addrMap.multiList[i].ji +"</td>";
+													}
 													tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
 													tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
-													tbody += "<td>"+ data.addrMap.multiList[i].totArea +"</td>";
-													if(data.addrMap.brTitleInfo.rideUseElvtCnt == "0"){
-														tbody += "<td>무</td>";
-													} else { 
-														tbody += "<td>유</td>";
-													}
+													tbody += "<td>"+ parseFloat(data.addrMap.multiList[i].totArea).toFixed(2) +"</td>";
+													tbody += "<td>유</td>";
 													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-													tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
-													tbody += "<td>"+ data.addrMap.multiList[i].tradePrice +"만원</td>";
+													tbody += "<td>-</td>";
+													tbody += "<td>"+ priceToString(data.addrMap.multiList[i].tradePrice) +"만원</td>";
 													tbody += "</tr>";
 												}
 												

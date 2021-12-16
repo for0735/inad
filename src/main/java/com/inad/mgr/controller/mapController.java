@@ -116,7 +116,8 @@ public class mapController {
 		addrMap = mapKind(addrArr, cdInfo);
 		System.out.println("필지가뭔데? " + addrMap.get("mapKind").toString());
 		
-		
+		addrMap.put("insteadAddr", StringUtil.insteadGun(addrMap.get("addr").toString()));
+
 		// 여기서부터 가격산정
 		if(addrMap.get("mapKind").toString().equals("98") || addrMap.get("mapKind").toString().equals("99")) {
 			// 비정상 코드
@@ -135,6 +136,9 @@ public class mapController {
 				brExposInfoArea = tempBr.get(0);
 				addrMap = getAptPrice(addrMap, tempBr.get(0).getArea());
 			}
+						
+			addrMap.put("br", brTitle);
+			addrMap.put("tempBr", tempBr);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -156,6 +160,8 @@ public class mapController {
 				addrMap = getOfficePrice(addrMap, tempBr.get(0).getArea());
 			}
 			
+			addrMap.put("br", brTitle);
+			addrMap.put("tempBr", tempBr);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -176,6 +182,9 @@ public class mapController {
 				brExposInfoArea = tempBr.get(0);
 				addrMap = getMultiPrice(addrMap, tempBr.get(0).getArea(), addrArr200);
 			}
+			
+			addrMap.put("br", brTitle);
+			addrMap.put("tempBr", tempBr);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -225,6 +234,9 @@ public class mapController {
 				brExposInfoArea = tempBr.get(0);
 				addrMap = getCommercialPrice(addrMap, tempBr.get(0).getArea(), addrArr200);
 			}
+			
+			addrMap.put("br", brTitle);
+			addrMap.put("tempBr", tempBr);
 			addrMap.put("brExposInfoArea", brExposInfoArea);
 			addrMap.put("brExposInfoAreaList", br);
 			addrMap.put("brTitleInfo", brTitle.get(0));
@@ -408,7 +420,6 @@ public class mapController {
 			// 아무것도 안함..
 		}
 		
-		
 		return addrMap;
 	}
 	
@@ -431,14 +442,19 @@ public class mapController {
 	// 아파트 가격산정
 	public Map<String, Object> getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
 		List<DataApt> dataAptList = new ArrayList<DataApt>();
+		List<DataApt> realDataAptList = new ArrayList<DataApt>();
 		dataAptList = mapService.getAptPrice(addrMap);
 		
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
+		System.out.println("면적은? " + areaF );
+		
 		for(int i=0; i<dataAptList.size(); i++) {
 			if(areaF-10 < Float.parseFloat(dataAptList.get(i).getTotArea()) && Float.parseFloat(dataAptList.get(i).getTotArea()) < areaF+10) {
 				int tradePrice = Integer.parseInt(dataAptList.get(i).getTradePrice());
 				float totArea = Float.parseFloat(dataAptList.get(i).getTotArea());
+				
+				realDataAptList.add(dataAptList.get(i));
 				
 				tempF.add(tradePrice/totArea);
 			}
@@ -457,7 +473,7 @@ public class mapController {
 		System.out.println((Math.round(sum/tempF.size() * areaF)));
 		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
 		addrMap.put("multiSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
-		addrMap.put("multiList", dataAptList);
+		addrMap.put("multiList", realDataAptList);
 		
 		return addrMap;
 	}
@@ -465,6 +481,7 @@ public class mapController {
 	// 오피스텔 가격산정
 	public Map<String, Object> getOfficePrice(Map<String, Object> addrMap, String area) throws Exception {
 		List<DataOffice> dataOfficeList = new ArrayList<DataOffice>();
+		List<DataOffice> realDataOfficeList = new ArrayList<DataOffice>();
 		dataOfficeList = mapService.getOfficePrice(addrMap);
 		
 		List<Float> tempF = new ArrayList<Float>();
@@ -474,6 +491,8 @@ public class mapController {
 				int tradePrice = Integer.parseInt(dataOfficeList.get(i).getTradePrice());
 				float totArea = Float.parseFloat(dataOfficeList.get(i).getTotArea());
 				
+				realDataOfficeList.add(dataOfficeList.get(i));
+				
 				tempF.add(tradePrice/totArea);
 			}
 		}
@@ -491,7 +510,7 @@ public class mapController {
 		System.out.println((Math.round(sum/tempF.size() * areaF)));
 		addrMap.put("price", Integer.toString((Math.round(sum/tempF.size() * areaF))) + "0000");
 		addrMap.put("multiSPrice", Integer.toString((Math.round(sum/tempF.size()))) + "0000");
-		addrMap.put("multiList", dataOfficeList);
+		addrMap.put("multiList", realDataOfficeList);
 		
 		return addrMap;
 	}
@@ -511,6 +530,7 @@ public class mapController {
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
 			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("3")) {
 				List<DataMulti> tempDataMultiList = new ArrayList<DataMulti>();
@@ -569,6 +589,7 @@ public class mapController {
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
 			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("5")) {
 				List<DataCommercial> tempDataCommercialList = new ArrayList<DataCommercial>();
@@ -634,6 +655,7 @@ public class mapController {
 			
 			
 			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("0")) {
 				List<DataLand> tempDataLandList = new ArrayList<DataLand>();
@@ -704,6 +726,7 @@ public class mapController {
 			
 			
 			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("1")) {
 				List<DataAlone> tempDataAloneList = new ArrayList<DataAlone>();

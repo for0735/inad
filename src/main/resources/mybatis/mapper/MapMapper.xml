@@ -40,7 +40,7 @@
 		AND sigunguCd = #{siCode}
 		AND bun = #{bun}
 		AND ji = #{ji}
-		ORDER BY dongNm ASC, hoNm ASC 
+		ORDER BY dongNm ASC, CAST(hoNm AS UNSIGNED) ASC 
 	</select>
 
 	<select id="getKindDeepZipHap" resultType="com.inad.mgr.domain.BrExposInfoArea">
@@ -51,40 +51,40 @@
 		AND ji = #{ji}
 		AND dongNm = #{dong}
 		AND hoNm = #{ho}
-		ORDER BY dongNm ASC, hoNm ASC 
+		ORDER BY dongNm ASC, CAST(hoNm AS UNSIGNED) ASC 
 	</select>
 	
 	<select id="getAptPrice" resultType="com.inad.mgr.domain.data.DataApt" parameterType="hashMap">
 		SELECT * FROM tb_dataApt
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
 	</select>
 	
 	<select id="getOfficePrice" resultType="com.inad.mgr.domain.data.DataOffice" parameterType="hashMap">
 		SELECT * FROM tb_dataOffice
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = cast(#{bun} as unsigned)
 		AND ji = cast(#{ji} as unsigned)
 	</select>
 	
 	<select id="getMultiPrice" resultType="com.inad.mgr.domain.data.DataMulti" parameterType="hashMap">
 		SELECT * FROM tb_dataMulti
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
 	</select>
 	
 	<select id="getCommercialPrice" resultType="com.inad.mgr.domain.data.DataMulti" parameterType="hashMap">
 		SELECT * FROM tb_dataCommercial
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
 	</select>
 	
 	<select id="getAlonePrice" resultType="com.inad.mgr.domain.data.DataAlone" parameterType="hashMap">
 		SELECT * FROM tb_dataAlone
-		WHERE platPlc LIKE CONCAT(#{addr},'%')
+		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
 	</select>
