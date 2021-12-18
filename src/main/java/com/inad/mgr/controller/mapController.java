@@ -113,7 +113,7 @@ public class mapController {
 		Map<String, Object> addrMap = new HashMap<String, Object>();
 		CdInfo cdInfo = findCdInfo(addrArr);
 		
-		addrMap = mapKind(addrArr, cdInfo);
+		addrMap = mapKind(addrArr, cdInfo, dong, ho);
 		System.out.println("필지가뭔데? " + addrMap.get("mapKind").toString());
 		
 		addrMap.put("insteadAddr", StringUtil.insteadGun(addrMap.get("addr").toString()));
@@ -297,7 +297,7 @@ public class mapController {
 	
 	
 	// 필지종류구하기
-	public Map<String, Object> mapKind(String[] argv, CdInfo cdInfo) throws Exception {
+	public Map<String, Object> mapKind(String[] argv, CdInfo cdInfo, String dong, String ho) throws Exception {
 		
 		/* mapKind
 		 * 0 : 토지
@@ -355,7 +355,11 @@ public class mapController {
 			System.out.println("이거토지건물임");
 		} else if(brTitleInfoList.get(0).getRegstrGbCd().equals("2")) {
 			//추가로직 동작
-			brExposInfoAreaList = mapService.getKindZipHap(argv, cdInfo, addr);
+			if(dong.equals("") && ho.equals("")) {
+				brExposInfoAreaList = mapService.getKindZipHap(argv, cdInfo, addr);
+			} else {				
+				brExposInfoAreaList = mapService.getKindDeepZipHap(argv, cdInfo, addr, dong, ho);
+			}
 			
 			if(brExposInfoAreaList.size() == 0) {
 				addrMap.put("mapKind", "98");
@@ -522,6 +526,9 @@ public class mapController {
 		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
 		tempAddrMap = addrMap;
 		
+		String dong = "";
+		String ho = "";
+		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
 		for(int i=0; i<addrArr.length; i++) {
@@ -529,10 +536,11 @@ public class mapController {
 			System.out.println(Arrays.deepToString(addrArr[i]));
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
-			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo, dong, ho);
 			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
-			if(tempAddrMap.get("mapKind").toString().equals("3")) {
+			if(tempAddrMap.get("mapKind").toString().equals("2") || tempAddrMap.get("mapKind").toString().equals("3") ||
+					tempAddrMap.get("mapKind").toString().equals("4") || tempAddrMap.get("mapKind").toString().equals("5")) {
 				List<DataMulti> tempDataMultiList = new ArrayList<DataMulti>();
 				
 				tempDataMultiList = mapService.getMultiPrice(tempAddrMap);
@@ -581,6 +589,9 @@ public class mapController {
 		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
 		tempAddrMap = addrMap;
 		
+		String dong = "";
+		String ho = "";
+		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 구분상가 뽑아냄. 그래서 addrMap에 추가
 		for(int i=0; i<addrArr.length; i++) {
@@ -588,10 +599,11 @@ public class mapController {
 			System.out.println(Arrays.deepToString(addrArr[i]));
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
-			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo, dong, ho);
 			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
-			if(tempAddrMap.get("mapKind").toString().equals("5")) {
+			if(tempAddrMap.get("mapKind").toString().equals("2") || tempAddrMap.get("mapKind").toString().equals("3") ||
+					tempAddrMap.get("mapKind").toString().equals("4") || tempAddrMap.get("mapKind").toString().equals("5")) {
 				List<DataCommercial> tempDataCommercialList = new ArrayList<DataCommercial>();
 				
 				tempDataCommercialList = mapService.getCommercialPrice(tempAddrMap);
@@ -642,6 +654,9 @@ public class mapController {
 		ApmmNvLandOpen apmm = new ApmmNvLandOpen();
 		apmm = br.get(0);
 		
+		String dong = "";
+		String ho = "";
+		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
 		System.out.println("배열의길이" + addrArr.length);
@@ -654,7 +669,7 @@ public class mapController {
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
 			
-			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo, dong, ho);
 			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("0")) {
@@ -713,6 +728,9 @@ public class mapController {
 		Map<String, Object> tempAddrMap = new HashMap<String, Object>();
 		tempAddrMap = addrMap;
 		
+		String dong = "";
+		String ho = "";
+		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 토지건물만 뽑아냄. 그래서 addrMap에 추가
 		System.out.println("배열의길이" + addrArr.length);
@@ -725,7 +743,7 @@ public class mapController {
 			CdInfo tempCdInfo = findCdInfo(addrArr[i]);
 			
 			
-			tempAddrMap = mapKind(addrArr[i], tempCdInfo);
+			tempAddrMap = mapKind(addrArr[i], tempCdInfo, dong, ho);
 			tempAddrMap.put("insteadAddr", StringUtil.insteadGun(tempAddrMap.get("addr").toString()));
 			
 			if(tempAddrMap.get("mapKind").toString().equals("1")) {

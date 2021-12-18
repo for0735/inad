@@ -124,6 +124,29 @@ public class MapServiceImpl implements MapService {
 	}
 
 	@Override
+	public List<BrExposInfoArea> getKindDeepZipHap(String[] argv, CdInfo cdInfo, String addr, String dong, String ho) throws Exception{
+		StringUtil stringUtil = new StringUtil();
+	
+		String siCode = "";
+		String bun = "";
+		String ji = "";
+		
+		siCode = cdInfo.getSigunguCd();
+		String bunJi = argv[argv.length-1];
+		
+		if(bunJi.contains("-")) {
+			String[] temp = bunJi.split("-");
+			bun = stringUtil.getJiBun(temp[0]);
+			ji = stringUtil.getJiBun(temp[1]);
+		} else {
+			bun = stringUtil.getJiBun(bunJi);
+			ji = "0000";
+		}
+		
+		return mapMapper.getKindDeepZipHap(addr, siCode, bun, ji, dong, ho);
+	}
+
+	@Override
 	public List<BrExposInfoArea> getKindDeepZipHap(String addr, String siCode, String bun, String ji, String dong, String ho) throws Exception {
 		
 		return mapMapper.getKindDeepZipHap(addr, siCode, bun, ji, dong, ho);

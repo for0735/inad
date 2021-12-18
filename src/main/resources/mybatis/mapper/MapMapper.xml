@@ -59,6 +59,7 @@
 		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 	<select id="getOfficePrice" resultType="com.inad.mgr.domain.data.DataOffice" parameterType="hashMap">
@@ -66,6 +67,7 @@
 		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = cast(#{bun} as unsigned)
 		AND ji = cast(#{ji} as unsigned)
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 	<select id="getMultiPrice" resultType="com.inad.mgr.domain.data.DataMulti" parameterType="hashMap">
@@ -73,6 +75,7 @@
 		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 	<select id="getCommercialPrice" resultType="com.inad.mgr.domain.data.DataMulti" parameterType="hashMap">
@@ -80,6 +83,7 @@
 		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 	<select id="getAlonePrice" resultType="com.inad.mgr.domain.data.DataAlone" parameterType="hashMap">
@@ -87,6 +91,7 @@
 		WHERE platPlc LIKE CONCAT(#{insteadAddr},'%')
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 	<select id="getLandPrice" resultType="com.inad.mgr.domain.data.DataLand" parameterType="hashMap">
@@ -95,6 +100,7 @@
 		AND hangCd = #{hangCd}
 		AND bun = #{bun}
 		AND ji = #{ji}
+		ORDER BY contractYM DESC, CAST(contractDate AS UNSIGNED) DESC
 	</select>
 	
 </mapper>
