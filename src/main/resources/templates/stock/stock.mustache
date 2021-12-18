@@ -1,5 +1,30 @@
-{{>main/layout/header}}
+{{>main/layout/library}}
+주식을볼까?
 
-주식을 볼까?
+<div id="crtfc_key"></div>
 
-{{>main/layout/footer}}
+<script>
+$(document).ready(function() {
+	//getCrtfc();
+});
+
+function getCrtfc(){
+	$.ajax({
+		type: 'POST',
+		url: '/stock/getCrtfc',
+		data: {},
+		dataType: 'JSON',
+		success: function(data)
+		{			
+			
+		
+			$("#crtfc_key").html("asdfsadf");
+		},
+		error:function(request,status,data)
+		{
+	        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
+	    }
+	});
+
+}
+</script>
