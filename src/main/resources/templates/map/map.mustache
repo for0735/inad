@@ -172,7 +172,7 @@ window.onhashchange = function() {
 
 
 <!-- table 집합-->
-<div class="table-group" id="modal_multi" style="display:none">
+<div class="table-group" id="modal_multi" style="display:none; overflow-y: scroll; height:800px;">
 <!--<div class="table-group">-->
 	<!-- <tr class="table-close">
         <button class="table-close"><img src="/img/close.png"></button>
@@ -1007,10 +1007,10 @@ function searchAddr(dong, ho){
 												tbody += "데이터가 없습니다.";
 												tbody += "</td>";
 											} else {
-												if(data_len >= 3){
-													data_len = 3;
+												if(data_len >= 10){
+													data_len = 10;
 												}
-												for(var i=0; i<3; i++) {
+												for(var i=0; i<data_len; i++) {
 													tbody += "<tr>";
 													tbody += "<td>"+ (Number(i)+1) +"</td>";
 													tbody += "<td>-</td>";

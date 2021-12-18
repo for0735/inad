@@ -446,21 +446,55 @@ public class mapController {
 	// 아파트 가격산정
 	public Map<String, Object> getAptPrice(Map<String, Object> addrMap, String area) throws Exception {
 		List<DataApt> dataAptList = new ArrayList<DataApt>();
+		List<DataApt> tempDataAptList = new ArrayList<DataApt>();
 		List<DataApt> realDataAptList = new ArrayList<DataApt>();
 		dataAptList = mapService.getAptPrice(addrMap);
+		
+		// 아파트는 21.6월, 21.1월, 전체 순으로 검색 1,2,3단계로 가격을 산정함
+		int j = 0;
+
+		while(true) {			
+			if(tempDataAptList.size() > 0 || j == 3) {
+				break;
+			}
+			
+			if(j == 0) {
+				for(int i=0; i<dataAptList.size(); i++) {
+					if(Integer.parseInt(dataAptList.get(i).getContractYM()) > 202106) {
+						tempDataAptList.add(dataAptList.get(i));
+					}
+				}		
+			} else if(j == 1) {
+				for(int i=0; i<dataAptList.size(); i++) {
+					if(Integer.parseInt(dataAptList.get(i).getContractYM()) > 202101) {
+						tempDataAptList.add(dataAptList.get(i));
+					}
+				}	
+			} else if(j == 2){
+				for(int i=0; i<dataAptList.size(); i++) {
+					tempDataAptList.add(dataAptList.get(i));
+				}	
+			}	
+			
+			j++;
+		}
 		
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
 		System.out.println("면적은? " + areaF );
 		
-		for(int i=0; i<dataAptList.size(); i++) {
-			if(areaF-10 < Float.parseFloat(dataAptList.get(i).getTotArea()) && Float.parseFloat(dataAptList.get(i).getTotArea()) < areaF+10) {
-				int tradePrice = Integer.parseInt(dataAptList.get(i).getTradePrice());
-				float totArea = Float.parseFloat(dataAptList.get(i).getTotArea());
-				
-				realDataAptList.add(dataAptList.get(i));
+		for(int i=0; i<tempDataAptList.size(); i++) {
+			if(areaF-10 < Float.parseFloat(tempDataAptList.get(i).getTotArea()) && Float.parseFloat(tempDataAptList.get(i).getTotArea()) < areaF+10) {
+				int tradePrice = Integer.parseInt(tempDataAptList.get(i).getTradePrice());
+				float totArea = Float.parseFloat(tempDataAptList.get(i).getTotArea());
 				
 				tempF.add(tradePrice/totArea);
+			}
+		}
+		
+		for(int i=0; i<dataAptList.size(); i++) {
+			if(areaF-10 < Float.parseFloat(dataAptList.get(i).getTotArea()) && Float.parseFloat(dataAptList.get(i).getTotArea()) < areaF+10) {
+				realDataAptList.add(dataAptList.get(i));
 			}
 		}
 		
