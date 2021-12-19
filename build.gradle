@@ -35,6 +35,7 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-mustache')
 	implementation('org.projectlombok:lombok')
 	implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+	implementation group: 'org.json', name: 'json', version: '20160810'
 }
 
 test {

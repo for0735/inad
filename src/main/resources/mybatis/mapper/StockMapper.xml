@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inad.mgr.mapper.StockMapper">
+
+	<select	id="getListCropcord" resultType="com.inad.mgr.domain.Cropcord">
+		SELECT * FROM tb_cropcord
+		WHERE isOfs IS NULL
+	</select>
+	
+	<update id="setIsOfs" parameterType="String">
+		UPDATE tb_cropcord
+		SET isOfs = "1"
+		WHERE corpCode = #{cropcord}
+	</update>
+	
+	<update id="setIsNotOfs" parameterType="String">
+		UPDATE tb_cropcord
+		SET isOfs = "0"
+		WHERE corpCode = #{cropcord}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

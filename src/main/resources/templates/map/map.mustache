@@ -515,10 +515,10 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												tbody += "데이터가 없습니다.";
 												tbody += "</td>";
 											} else {
-												if(data_len >= 3){
-													data_len = 3;
+												if(data_len >= 10){
+													data_len = 10;
 												}
-												for(var i=0; i<3; i++) {
+												for(var i=0; i<data_len; i++) {
 													tbody += "<tr>";
 													tbody += "<td>"+ (Number(i)+1) +"</td>";
 													tbody += "<td>-</td>";

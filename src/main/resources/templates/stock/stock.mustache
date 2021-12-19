@@ -1,7 +1,10 @@
 {{>main/layout/library}}
 주식을볼까?
 
-<div id="crtfc_key"></div>
+<div id="crtfcKey"></div>
+
+<select id="crtfcList">
+</select>
 
 <script>
 $(document).ready(function() {
@@ -16,9 +19,20 @@ function getCrtfc(){
 		dataType: 'JSON',
 		success: function(data)
 		{			
-			
-		
-			$("#crtfc_key").html("asdfsadf");
+			if(data.result == 1){
+				$("#crtfcList").empty();
+				
+				if(data.cropcordList.length == 0){
+					$("#crtfcList").append("<option value=''>선택</option>");
+				} else {
+					$("#crtfcList").append("<option value=''>선택</option>");
+					for(var i=0; i<data.cropcordList.length; i++){
+						$("#crtfcList").append("<option value='" + data.cropcordList[i].corpCode + "'>" + data.cropcordList[i].corpName + "</option>");
+					}
+				}
+			} else {
+				alert("데이터를 가져올 수 없습니다");
+			}
 		},
 		error:function(request,status,data)
 		{
