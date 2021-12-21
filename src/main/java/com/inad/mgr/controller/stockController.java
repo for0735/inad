@@ -83,43 +83,59 @@ public class stockController {
 		List<Cropcord> cropcordList = new ArrayList<Cropcord>();
 
         try {
-        	cropcordList = stockService.getListCropcord();
+        	int j=0;
         	
-        	for(int i=0; i<100; i++) {
-        		System.out.println(cropcordList.get(i).getCorpCode() + cropcordList.get(i).getCorpName() + cropcordList.get(i).getStockCode() + cropcordList.get(i).getModifyDate());
-        	}
-        	        	
-        	// api 돌리기
-        	for(int i=0; i<1000; i++) {
-        		HttpURLConnection conn = null;
-        		JSONObject responseJson = null;
+        	while(true) {
         		
-        		URL url = new URL(HOST_URL + "?crtfc_key=1b24a7be119ac5ab8df1299727a3d2e282197273&corp_code=" + cropcordList.get(i).getCorpCode() + "&bsns_year=2020&reprt_code=11011&fs_div=OFS");
+        		cropcordList = stockService.getListCropcord();
+            	
+            	for(int i=0; i<100; i++) {
+            		System.out.println(cropcordList.get(i).getCorpCode() + cropcordList.get(i).getCorpName() + cropcordList.get(i).getStockCode() + cropcordList.get(i).getModifyDate());
+            	}
+            	        	
+            	// api 돌리기
+            	for(int i=0; i<1000; i++) {
+            		HttpURLConnection conn = null;
+            		JSONObject responseJson = null;
+            		
+            		URL url = new URL(HOST_URL + "?crtfc_key=9a8fc6c316f957142b271baf6a6d79485dc8bf5f&corp_code=" + cropcordList.get(i).getCorpCode() + "&bsns_year=2020&reprt_code=11011&fs_div=OFS");
+            		
+            		conn = (HttpURLConnection)url.openConnection();
+            		conn.setConnectTimeout(5000);
+            		conn.setReadTimeout(5000);
+            		conn.setRequestMethod("GET");
+            		//conn.setDoOutput(true);
+            		
+            		int responseCode = conn.getResponseCode();
+            		if (responseCode == 400 || responseCode == 401 || responseCode == 500 ) {
+            			System.out.println(responseCode + " Error!");
+            		} else {
+            			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            			StringBuilder sb = new StringBuilder();
+            			String line = "";
+            			while ((line = br.readLine()) != null) {
+            				sb.append(line);
+            			}
+            			responseJson = new JSONObject(sb.toString());
+            			System.out.println(responseJson.get("status").toString() + " " + cropcordList.get(i).getCorpName());
+            			if(responseJson.get("status").toString().equals("000")) {
+            				System.out.println("찍히넹?");
+            				stockService.setIsOfs(cropcordList.get(i).getCorpCode());
+            			} else if(responseJson.get("status").toString().equals("013")) {
+            				stockService.setIsNotOfs(cropcordList.get(i).getCorpCode());
+            			} else {
+            				System.out.println("더 이상 api를 받아올 수 없습니다.");
+            				System.out.println("반환코드 : " + responseJson.get("status").toString());
+            				return;
+            			}
+            		}
+            	}
         		
-        		conn = (HttpURLConnection)url.openConnection();
-        		conn.setConnectTimeout(5000);
-        		conn.setReadTimeout(5000);
-        		conn.setRequestMethod("GET");
-        		//conn.setDoOutput(true);
+        		j++;
+        		Thread.sleep(70000);
         		
-        		int responseCode = conn.getResponseCode();
-        		if (responseCode == 400 || responseCode == 401 || responseCode == 500 ) {
-        			System.out.println(responseCode + " Error!");
-        		} else {
-        			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        			StringBuilder sb = new StringBuilder();
-        			String line = "";
-        			while ((line = br.readLine()) != null) {
-        				sb.append(line);
-        			}
-        			responseJson = new JSONObject(sb.toString());
-        			System.out.println(responseJson.get("status").toString() + " " + cropcordList.get(i).getCorpName());
-        			if(responseJson.get("status").toString().equals("000")) {
-        				System.out.println("찍히넹?");
-        				stockService.setIsOfs(cropcordList.get(i).getCorpCode());
-        			} else {
-        				stockService.setIsNotOfs(cropcordList.get(i).getCorpCode());
-        			}
+        		if(j>=10) {
+        			break;
         		}
         	}
         	
