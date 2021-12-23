@@ -6,7 +6,7 @@
 
 	<select	id="getListCropcord" resultType="com.inad.mgr.domain.Cropcord">
 		SELECT * FROM tb_cropcord
-		WHERE isOfs IS NULL
+		WHERE isOfs = '1'
 	</select>
 	
 	<update id="setIsOfs" parameterType="String">

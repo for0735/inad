@@ -6,9 +6,14 @@
 <select id="crtfcList">
 </select>
 
+<button id="getCrt" onClick="getCrtApi()">검색</button>
+
+<br>
+<textarea id="txtArea"></textarea>
+
 <script>
 $(document).ready(function() {
-	//getCrtfc();
+	getCrtfc();
 });
 
 function getCrtfc(){
@@ -40,5 +45,32 @@ function getCrtfc(){
 	    }
 	});
 
+}
+
+function getCrtApi(){
+	if($("#crtfcList").val()==''){
+		alert("회사를 선택해주세요");
+		return;
+	}
+
+	$.ajax({
+		type: 'POST',
+		url: '/stock/getCrtApi',
+		data: {"cropCord" : $("#crtfcList").val()},
+		dataType: 'JSON',
+		success: function(data)
+		{			
+			if(data.result == 1){
+				alert("가져오기성공");
+				$("#txtArea").val(data.cropJson);
+			} else {
+				alert("데이터를 가져올 수 없습니다");
+			}
+		},
+		error:function(request,status,data)
+		{
+	        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
+	    }
+	});
 }
 </script>

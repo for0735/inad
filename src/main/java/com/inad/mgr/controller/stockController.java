@@ -40,6 +40,7 @@ public class stockController {
 	
 	final static String HOST_URL = "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json";
 	final static String HOST_URL1 = "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json?crtfc_key=1b24a7be119ac5ab8df1299727a3d2e282197273&corp_code=00258801&bsns_year=2020&reprt_code=11011&fs_div=OFS";
+	//메인 API 키
 	final static String apiKey = "1b24a7be119ac5ab8df1299727a3d2e282197273";
 	
 	@Autowired
@@ -48,6 +49,7 @@ public class stockController {
 	@RequestMapping("/main")
 	public String main(Model model) {
 		
+		//풀지말것
 		//setIsOfs();
 		
 		return "stock/stock";
@@ -68,6 +70,48 @@ public class stockController {
 		
 		mv.addObject("result", result);
 		mv.addObject("cropcordList", cropcordList);
+		
+		return mv;
+	}
+	
+	// API가져와서 계산하기
+	@RequestMapping(value="/getCrtApi", method=RequestMethod.POST)
+    public ModelAndView getCrtApi(HttpServletRequest request, Model model, RedirectAttributes rttr, Principal prin) throws Exception {
+		ModelAndView mv = new ModelAndView("jsonView");
+		int result = 0;
+		
+		String cropCord = request.getParameter("cropCord"); 
+		String cropJson = "";
+		
+		HttpURLConnection conn = null;
+		JSONObject responseJson = null;
+		
+		URL url = new URL(HOST_URL + "?crtfc_key=" + apiKey + "&corp_code=" + cropCord + "&bsns_year=2020&reprt_code=11011&fs_div=OFS");
+		
+		conn = (HttpURLConnection)url.openConnection();
+		conn.setConnectTimeout(5000);
+		conn.setReadTimeout(5000);
+		conn.setRequestMethod("GET");
+		//conn.setDoOutput(true);
+		
+		int responseCode = conn.getResponseCode();
+		if (responseCode == 400 || responseCode == 401 || responseCode == 500 ) {
+			System.out.println(responseCode + " Error!");
+		} else {
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			
+			cropJson = sb.toString();
+		}
+		
+		result = 1;
+		
+		mv.addObject("result", result);
+		mv.addObject("cropJson", cropJson);
 		
 		return mv;
 	}
