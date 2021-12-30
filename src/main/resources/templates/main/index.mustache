@@ -1,6 +1,36 @@
-{{>main/layout/header}}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주식과 부동산 </title>
 
-<a href="/map/main">맵</a>
-<a href="/stock/main">주식</a>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style-main.css"/>
+
+</head>
+
+
+
+<body>
+    <section class="main_section">
+        <div class="logo"><img src="./img/logo.png"></div>
+        <div class="container">
+            <div class="item box01" onclick="location.href='/map/main'" >
+                <a class="title01">부동산</a>
+                <a class="btn">바로가기➝</a>
+            </div>
+            <div class="item box02" onclick="location.href='/stock/main'" >
+                <a class="title01">주식</a>
+                <a class="btn">바로가기➝</a>
+            </div>
+        </div>
+  </section>
+
+
+</body>
+</html>
+
 
 {{>main/layout/footer}}

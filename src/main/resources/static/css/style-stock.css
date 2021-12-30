@@ -1,0 +1,88 @@
+* {
+    margin:0;
+	padding:0;
+	color:#000;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+header{
+    display: flex;
+    position: sticky;
+    top: 0;
+    background: #23546f;
+    color: white;
+    height: 100px;
+}
+
+header .logo{
+    padding-left: 20px; 
+    margin-top: 24px; 
+}
+
+header .logo img{
+    cursor: pointer;
+}
+
+
+.searchConatiner{
+    width: 500px;
+    margin: 50px auto;
+    display: flex;
+    border-bottom: 2px solid #23546f;
+    background-color: #ffffff00;
+}
+
+
+#search{
+    margin: auto;
+    width: 440px;
+    display: inline-block;
+    padding: 10px;
+    background-color: #ffffff00;
+    border: none;
+}
+
+#searchBtn{
+    display: flex;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#searchBtn img{
+    cursor: pointer;
+}
+
+
+
+.infoContainer{
+    margin: auto;
+    width: 1200px;
+    }
+
+.infoArea {
+    margin: auto;
+    word-break: break-all;
+    border-collapse: collapse;
+}
+
+.infoTh {
+    font-size: 13px; padding: 8px; border-bottom: 2px solid rgb(0, 0, 0); text-align: center;
+}
+
+.infoTd {
+    font-size: 13px; padding: 8px; border-bottom: 1px solid rgb(199, 199, 199); text-align: center;
+    
+}
+
+.section01{
+   width: 30%; 
+}
+.section02{
+    width: 9%;
+ }
+
+ .infoTd img{cursor: pointer;}
+
