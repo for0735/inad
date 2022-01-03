@@ -211,11 +211,21 @@ public class mapController {
 			if(brApmm != null) {
 				apmmNvLandOpen = brApmm.get(0);
 
-				addrMap = getAlonePrice(addrMap, brTitle.get(0).getPlatArea(), addrArr200);
+				addrMap = getAlonePrice(addrMap, brTitle.get(0).getTotArea(), addrArr200);
 				addrMap.put("apmmNvLandOpen", apmmNvLandOpen);
 				addrMap.put("brTitleInfo", brTitle.get(0));
 				addrMap.put("landList", (ArrayList<DataAlone>)addrMap.get("landList"));
 				System.out.println("가격은??? : " + addrMap.get("price").toString());
+				
+				//토지가격도 추가로 가져올것
+				/*Map<String, Object> addrLandMap = new HashMap<String, Object>(addrMap);
+				
+				addrLandMap = getLandPrice(addrLandMap, addrArr200);
+				mv.addObject("addrLandMap", addrLandMap);
+				System.out.println("가격은??? : " + addrMap.get("price").toString());
+				*/
+				
+				
 			} else {
 				result = 2;
 			}
@@ -481,7 +491,6 @@ public class mapController {
 		
 		List<Float> tempF = new ArrayList<Float>();
 		float areaF = Float.parseFloat(area);
-		System.out.println("면적은? " + areaF );
 		
 		for(int i=0; i<tempDataAptList.size(); i++) {
 			if(areaF-10 < Float.parseFloat(tempDataAptList.get(i).getTotArea()) && Float.parseFloat(tempDataAptList.get(i).getTotArea()) < areaF+10) {
@@ -693,10 +702,7 @@ public class mapController {
 		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 연립다세대만 뽑아냄. 그래서 addrMap에 추가
-		System.out.println("배열의길이" + addrArr.length);
 		for(int i=0; i<addrArr.length; i++) {
-			System.out.println(i);
-			System.out.println(Arrays.deepToString(addrArr[i]));
 			if(Arrays.deepToString(addrArr[i]).equals("[]")) {
 				continue;
 			}
@@ -767,10 +773,7 @@ public class mapController {
 		
 		//실거래 리스트 가져오기
 		//가져온 주소를 바탕으로 토지건물만 뽑아냄. 그래서 addrMap에 추가
-		System.out.println("배열의길이" + addrArr.length);
 		for(int i=0; i<addrArr.length; i++) {
-			System.out.println(i);
-			System.out.println(Arrays.deepToString(addrArr[i]));
 			if(Arrays.deepToString(addrArr[i]).equals("[]")) {
 				continue;
 			}
@@ -785,7 +788,6 @@ public class mapController {
 				
 				tempDataAloneList = mapService.getAlonePrice(tempAddrMap);
 				
-				System.out.println("사이즈  " + tempDataAloneList.size());
 				for(int j=0; j<tempDataAloneList.size(); j++) {
 					dataAloneList.add(tempDataAloneList.get(j));
 				}

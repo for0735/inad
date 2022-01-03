@@ -144,7 +144,7 @@ window.onhashchange = function() {
 		</tr>
         <tr>
 		  <td class="background-s">2021년 공시지가</td>
-		  <td>28,920,000 원</td>
+		  <td>-</td>
 		  <td class="background-s">사용승인일</td>
           <td id="land_ss_day">2003-06-20</td>
 		</tr>
@@ -703,7 +703,6 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												$("#land_ss_price").text("-");
 											}
 											
-											
 											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
 											$("#land_s_area").text("-");
 											$("#land_purps").text(data.addrMap.apmmNvLandOpen.spfc1);
@@ -716,15 +715,25 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												$("#land_ll_price").text("-");
 												$("#land_ss_price").text("-");
 											} else {
-												$("#land_price").text(priceToString(Number(data.addrMap.price) + Number(data.addrMap.price)) + "원");
-												$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
-												$("#land_s_price").text(priceToString(data.addrMap.price) + "원");
+												// 건물가격, 토지가격 구하기
+												var subYear = 45 - (2022 - Number(data.addrMap.brTitleInfo.pmsnoYear));
+												var alonePrice = (1000000 * Number(subYear) / 45) * Number(data.addrMap.brTitleInfo.totArea);
+												var landPrice = Number(data.addrMap.price) - Number(alonePrice);
+												
+												Math.ceil(1222 / 10) * 10
+												
+												$("#land_price").text(priceToString(data.addrMap.price) + "원");
+												$("#land_l_price").text(priceToString(Math.ceil(landPrice / 10000) * 10000) + "원");
+												$("#land_s_price").text(priceToString(Math.ceil(alonePrice / 10000) * 10000) + "원");
 													var price = "";
-													price += priceToString(data.addrMap.landSPrice) + " 원<br>";
-													price += "개별공시지가대비 ";
-													price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
-													price += "%";
+													price += priceToString(Math.ceil(landPrice / parseFloat(data.addrMap.apmmNvLandOpen.parea) / 10000) * 10000) + " 원";
+													//price += priceToString(data.addrLandMap.landSPrice) + " 원<br>";
+													//price += "개별공시지가대비 ";
+													//price += parseFloat((Number(data.addrLandMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100).toFixed(2);
+													//price += "%";
 												$("#land_ll_price").text(price);
+													price = "";
+													price += priceToString(Math.ceil(alonePrice / parseFloat(data.addrMap.brTitleInfo.totArea) / 10000) * 10000) + " 원";
 												$("#land_ss_price").text(price);
 											}
 											
@@ -733,7 +742,7 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 											$("#land_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
 											$("#land_main_purps").text(data.addrMap.brTitleInfo.etcPurps);
 										}
-										$("#land_ss_day").text("2003-05-06");
+										$("#land_ss_day").text("-");
 										
 										// 바디구현
 										var tbody = "";
@@ -769,7 +778,7 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 													tbody += "<td>-</td>";
 													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
 													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
-													tbody += "<td>"+ data.addrMap.landList[i].tradePrice +"만원</td>";
+													tbody += "<td>"+ priceToString(data.addrMap.landList[i].tradePrice) +"만원</td>";
 												}
 												
 												tbody += "</tr>";
@@ -1231,7 +1240,6 @@ function searchAddr(dong, ho){
 												$("#land_ss_price").text("-");
 											}
 											
-											
 											$("#land_l_area").text(data.addrMap.apmmNvLandOpen.parea + "㎡");
 											$("#land_s_area").text("-");
 											$("#land_purps").text(data.addrMap.apmmNvLandOpen.spfc1);
@@ -1244,15 +1252,25 @@ function searchAddr(dong, ho){
 												$("#land_ll_price").text("-");
 												$("#land_ss_price").text("-");
 											} else {
-												$("#land_price").text(priceToString(Number(data.addrMap.price) + Number(data.addrMap.price)) + "원");
-												$("#land_l_price").text(priceToString(data.addrMap.price) + "원");
-												$("#land_s_price").text(priceToString(data.addrMap.price) + "원");
+												// 건물가격, 토지가격 구하기
+												var subYear = 45 - (2022 - Number(data.addrMap.brTitleInfo.pmsnoYear));
+												var alonePrice = (1000000 * Number(subYear) / 45) * Number(data.addrMap.brTitleInfo.totArea);
+												var landPrice = Number(data.addrMap.price) - Number(alonePrice);
+												
+												Math.ceil(1222 / 10) * 10
+												
+												$("#land_price").text(priceToString(data.addrMap.price) + "원");
+												$("#land_l_price").text(priceToString(Math.ceil(landPrice / 10000) * 10000) + "원");
+												$("#land_s_price").text(priceToString(Math.ceil(alonePrice / 10000) * 10000) + "원");
 													var price = "";
-													price += priceToString(data.addrMap.landSPrice) + " 원<br>";
-													price += "개별공시지가대비 ";
-													price += (Number(data.addrMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100;
-													price += "%";
+													price += priceToString(Math.ceil(landPrice / parseFloat(data.addrMap.apmmNvLandOpen.parea) / 10000) * 10000) + " 원";
+													//price += priceToString(data.addrLandMap.landSPrice) + " 원<br>";
+													//price += "개별공시지가대비 ";
+													//price += parseFloat((Number(data.addrLandMap.landSPrice) / Number(data.addrMap.apmmNvLandOpen.pnilp)) * 100).toFixed(2);
+													//price += "%";
 												$("#land_ll_price").text(price);
+													price = "";
+													price += priceToString(Math.ceil(alonePrice / parseFloat(data.addrMap.brTitleInfo.totArea) / 10000) * 10000) + " 원";
 												$("#land_ss_price").text(price);
 											}
 											
@@ -1261,7 +1279,7 @@ function searchAddr(dong, ho){
 											$("#land_purps").text(data.addrMap.brTitleInfo.mainPurpsCdNm);
 											$("#land_main_purps").text(data.addrMap.brTitleInfo.etcPurps);
 										}
-										$("#land_ss_day").text("2003-05-06");
+										$("#land_ss_day").text("-");
 										
 										// 바디구현
 										var tbody = "";
@@ -1297,7 +1315,7 @@ function searchAddr(dong, ho){
 													tbody += "<td>-</td>";
 													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
 													tbody += "<td>"+ data.addrMap.landList[i].useAprDay +"</td>";
-													tbody += "<td>"+ data.addrMap.landList[i].tradePrice +"만원</td>";
+													tbody += "<td>"+ priceToString(data.addrMap.landList[i].tradePrice) +"만원</td>";
 												}
 												
 												tbody += "</tr>";
