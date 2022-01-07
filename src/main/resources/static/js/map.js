@@ -185,3 +185,71 @@ function getAddrList500(obj){
 function searchHo(){
 	
 }
+
+
+
+
+//폐기코드
+/*for(var i=0; i<data_len; i++) {
+	tbody += "<tr>";
+	tbody += "<td>"+ (Number(i)+1) +"</td>";
+	tbody += "<td>-</td>";
+	
+	var subListAddr = "<td>"+ data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].oldBunJi +"</td>";
+	tbody += subListAddr; 
+	tbody += "<td>"+ data.addrMap.multiList[i].bldNm +"</td>";
+	tbody += "<td>"+ data.addrMap.multiList[i].floor + " 층</td>";
+	tbody += "<td>"+ parseFloat(data.addrMap.multiList[i].totArea).toFixed(2) +"</td>";
+	tbody += "<td>-</td>";
+	tbody += "<td>"+ data.addrMap.multiList[i].useAprDay +"</td>";
+	tbody += "<td>" + changeDateString(data.addrMap.multiList[i].contractYM + data.addrMap.multiList[i].contractDate) + "</td>";
+	tbody += "<td>"+ priceToString(data.addrMap.multiList[i].tradePrice) +"만원</td>";
+	tbody += "</tr>";
+	
+	var tempAddr2 = data.addrMap.multiList[i].platPlc + " " + data.addrMap.multiList[i].oldBunJi;
+	var tempPrice = priceToString(data.addrMap.multiList[i].tradePrice);
+	var tempArea = parseFloat(data.addrMap.multiList[i].totArea).toFixed(2);
+	
+	cSubListAddr.push(tempAddr2);
+	cTempPrice.push(tempPrice);
+	cTempArea.push(tempArea);
+	
+	//await delayP(1);
+	
+	geocoder.addressSearch(tempAddr2, function(result2, status) {
+	
+	    // 정상적으로 검색이 완료됐으면 
+	     if (status === kakao.maps.services.Status.OK) {
+	        var coords2 = new kakao.maps.LatLng(result2[0].y, result2[0].x);
+	
+			// 주소중복이면 마크 생성x
+			// 순서대로 안빠짐 (추후 수정 필수)
+			var boolX = true;
+			
+			for(var j=0; j<tempSubAddr.length; j++){
+				if(tempSubAddr[j].La == coords2.La && tempSubAddr[j].Ma == coords2.Ma){
+					boolX = false;
+				}
+			}
+			
+			if(boolX==true){																
+				// 결과값으로 받은 위치를 마커로 표시합니다
+		        marker = new kakao.maps.Marker({
+		            map: map,
+		            position: coords2
+		        });
+		        
+		        var iwContent = '<div onMouseOver="reloadDiv($(this))" style="padding:5%;">주소 : ' + cSubListAddr.shift() + '<br>가격 : ' + cTempPrice.shift() + '만원<br>전용면적 : ' + cTempArea.shift() + '</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+				
+				var infowindow = new kakao.maps.InfoWindow({
+				    position : coords2, 
+				    content : iwContent 
+				});
+				
+				infowindow.open(map, marker); 
+				tempSubAddr.push(coords2);
+			}
+		}
+	});
+}*/
+
