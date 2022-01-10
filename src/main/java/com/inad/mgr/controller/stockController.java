@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.inad.mgr.domain.Cropcord;
+import com.inad.mgr.domain.StockCrt;
 import com.inad.mgr.service.StockService;
 import com.inad.mgr.util.HttpClient;
 
@@ -70,6 +71,29 @@ public class stockController {
 		
 		mv.addObject("result", result);
 		mv.addObject("cropcordList", cropcordList);
+		
+		return mv;
+	}
+	
+	// 페이징으로 검색한 리스트 가져올것
+	@RequestMapping(value="/getSearchCrtfc", method=RequestMethod.POST)
+	public ModelAndView getSearchCrtfc(HttpServletRequest request, Model model, RedirectAttributes rttr, Principal prin) throws Exception {
+		ModelAndView mv = new ModelAndView("jsonView");
+		int result = 0;
+		
+		//HttpClient.useByteBuffer();
+		List<Cropcord> cropcordList = new ArrayList<Cropcord>();
+		cropcordList = stockService.getSearchListCropcord();
+		
+		//계산하기
+		List<StockCrt> stockCrtList = new ArrayList<StockCrt>();
+		stockCrtList = mainCulStork(cropcordList);
+		
+		result = 1;
+		
+		mv.addObject("result", result);
+		mv.addObject("cropcordList", cropcordList);
+		mv.addObject("stockCrtList", stockCrtList);
 		
 		return mv;
 	}
@@ -193,5 +217,28 @@ public class stockController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+	}
+	
+	//페이징 처리된 주식 리스트 계산하기
+	public List<StockCrt> mainCulStork(List<Cropcord> cropcordList) throws Exception{
+		List<StockCrt> stockCrtList = new ArrayList<StockCrt>();
+		
+		for(int i=0; i<cropcordList.size(); i++) {
+			StockCrt stockCrt = new StockCrt();
+			
+			stockCrt.setCorpCode(cropcordList.get(i).getCorpCode());
+			stockCrt.setCorpName(cropcordList.get(i).getCorpName());
+			stockCrt.setStockCode(cropcordList.get(i).getStockCode());
+			stockCrt.setPdcp("");
+			stockCrt.setFpp("");
+			stockCrt.setRatio("");
+			stockCrt.setFsp("");
+			stockCrt.setOpinion("");
+			stockCrt.setOopinion("");
+			
+			stockCrtList.add(stockCrt);
+		}
+		
+		return stockCrtList;
 	}
 }

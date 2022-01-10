@@ -8,6 +8,9 @@ import com.inad.mgr.domain.Cropcord;
 public interface StockService {
 	//리스트 가져오기
 	public List<Cropcord> getListCropcord() throws Exception;
+
+	//검색 리스트 가져오기
+	public List<Cropcord> getSearchListCropcord() throws Exception;
 	
 	//재무제표 있는상태로 변환
 	public void setIsOfs(String cropcord) throws Exception;

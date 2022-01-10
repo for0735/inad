@@ -8,6 +8,12 @@
 		SELECT * FROM tb_cropcord
 		WHERE isOfs = '1'
 	</select>
+
+	<select	id="getSearchListCropcord" resultType="com.inad.mgr.domain.Cropcord">
+		SELECT * FROM tb_cropcord
+		WHERE isOfs = '1'
+		LIMIT 10
+	</select>
 	
 	<update id="setIsOfs" parameterType="String">
 		UPDATE tb_cropcord

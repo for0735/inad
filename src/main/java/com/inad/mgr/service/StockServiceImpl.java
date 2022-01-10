@@ -21,6 +21,12 @@ public class StockServiceImpl implements StockService {
 
 		return stockMapper.getListCropcord();
 	}
+	
+	@Override
+	public List<Cropcord> getSearchListCropcord() throws Exception {
+		
+		return stockMapper.getSearchListCropcord();
+	}
 
 	@Override
 	public void setIsOfs(String cropcord) throws Exception {
