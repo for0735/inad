@@ -23,9 +23,9 @@ public class StockServiceImpl implements StockService {
 	}
 	
 	@Override
-	public List<Cropcord> getSearchListCropcord() throws Exception {
+	public List<Cropcord> getSearchListCropcord(String search, int limit, int cntPerPage) throws Exception {
 		
-		return stockMapper.getSearchListCropcord();
+		return stockMapper.getSearchListCropcord(search, limit, cntPerPage);
 	}
 
 	@Override
@@ -39,6 +39,11 @@ public class StockServiceImpl implements StockService {
 		
 		stockMapper.setIsNotOfs(cropcord);		
 	}
+
 	
 	
+	@Override
+	public int countCrop(String search) {
+		return stockMapper.countCrop(search);
+	}
 }

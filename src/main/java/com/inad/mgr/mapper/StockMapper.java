@@ -21,7 +21,8 @@ import com.inad.mgr.domain.data.DataOffice;
 @Mapper
 public interface StockMapper {
 	public List<Cropcord> getListCropcord() throws Exception;
-	public List<Cropcord> getSearchListCropcord() throws Exception;
+	public List<Cropcord> getSearchListCropcord(@Param("search")String search, @Param("limit")int start, @Param("cntPerPage")int end) throws Exception;
 	public void setIsOfs(@Param("cropcord") String cropcord) throws Exception;
 	public void setIsNotOfs(@Param("cropcord") String cropcord) throws Exception;
+	public int countCrop(@Param("search")String search);
 }

@@ -10,9 +10,21 @@
 	</select>
 
 	<select	id="getSearchListCropcord" resultType="com.inad.mgr.domain.Cropcord">
-		SELECT * FROM tb_cropcord
+		<!-- SELECT * 
+			FROM (
+				SELECT * 
+				FROM tb_cropcord 
+				ORDER BY modifyDate DESC 
+				) 
+		WHERE isOfs = "1"
+		LIMIT #{limit}, #{cntPerPage} -->
+		
+		SELECT * 
+		FROM tb_cropcord 
 		WHERE isOfs = '1'
-		LIMIT 10
+		AND corpName LIKE CONCAT('%', #{search}, '%')
+		ORDER BY modifyDate DESC 
+		LIMIT #{limit}, #{cntPerPage} 
 	</select>
 	
 	<update id="setIsOfs" parameterType="String">
@@ -26,6 +38,13 @@
 		SET isOfs = "0"
 		WHERE corpCode = #{cropcord}
 	</update>
+	
+	<!-- 총 게시글 갯수 출력 -->
+	<select id="countCrop" resultType="int">
+		SELECT COUNT(*) FROM tb_cropcord
+		WHERE isOfs = "1"
+		AND corpName LIKE CONCAT('%', #{search}, '%')
+	</select>
 	
 </mapper>
 

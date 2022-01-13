@@ -33,6 +33,7 @@ import com.inad.mgr.domain.Cropcord;
 import com.inad.mgr.domain.StockCrt;
 import com.inad.mgr.service.StockService;
 import com.inad.mgr.util.HttpClient;
+import com.inad.mgr.util.PagingVO;
 
 @Slf4j
 @Controller
@@ -50,6 +51,7 @@ public class stockController {
 	@RequestMapping("/main")
 	public String main(Model model) {
 		
+		model.addAttribute("nowPage", 1);
 		//풀지말것
 		//setIsOfs();
 		
@@ -79,19 +81,38 @@ public class stockController {
 	@RequestMapping(value="/getSearchCrtfc", method=RequestMethod.POST)
 	public ModelAndView getSearchCrtfc(HttpServletRequest request, Model model, RedirectAttributes rttr, Principal prin) throws Exception {
 		ModelAndView mv = new ModelAndView("jsonView");
+		String nowPage = request.getParameter("nowPage");
+		String cntPerPage = request.getParameter("cntPerPage");
+		String search = request.getParameter("search");
 		int result = 0;
+		int total = stockService.countCrop(search);
 		
 		//HttpClient.useByteBuffer();
 		List<Cropcord> cropcordList = new ArrayList<Cropcord>();
-		cropcordList = stockService.getSearchListCropcord();
+		PagingVO vo = new PagingVO();
 		
 		//계산하기
+		// 페이징 처리
+		if (nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage = "5";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "5";
+		}
+		
+		vo = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		cropcordList = stockService.getSearchListCropcord(search ,vo.getEnd()-vo.getCntPerPage(), vo.getCntPerPage());
+		
 		List<StockCrt> stockCrtList = new ArrayList<StockCrt>();
 		stockCrtList = mainCulStork(cropcordList);
 		
 		result = 1;
 		
 		mv.addObject("result", result);
+		mv.addObject("paging", vo);
+		mv.addObject("total", total);
 		mv.addObject("cropcordList", cropcordList);
 		mv.addObject("stockCrtList", stockCrtList);
 		

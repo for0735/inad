@@ -19,10 +19,19 @@
     <header>
         <div class="logo" onclick="location.href('#')"><img src="/img/logo.png"></div>
     </header>
+    
+	<input id="nowPage" name="nowPage" type="hidden" value="{{nowPage}}"/>
+	
 
     <div class="searchConatiner">
-        <input id="search" type="text"  placeholder="품목명 입력"  onfocus="this.placeholder=''" onblur="this.placeholder='품목명 입력'">
-        <div id="searchBtn" ><img src="/img/searchView.png"></div>
+        <input id="search" type="text" onkeyup="enterkey()"  placeholder="품목명 입력"  onfocus="this.placeholder=''" onblur="this.placeholder='품목명 입력'">
+        <div id="searchBtn" onClick="getSearchCrtfc()" ><img src="/img/searchView.png"></div>
+    	<select id="cntPerPage" name="sel" onchange="$('#nowPage').val(1); selChange($('#nowPage').val())">
+			<option value="5" selected>5줄 보기</option>
+			<option value="10">10줄 보기</option>
+			<option value="15">15줄 보기</option>
+			<option value="20">20줄 보기</option>
+		</select>
     </div>
 
     <div class="infoContainer">
@@ -40,35 +49,11 @@
             </tr>
             <tbody id="tbody">
             </tbody>
-            <!--<tr>
-                <td class="infoTd">A066400</td>
-                <td class="infoTd ">HANATOURIST</td>
-                <td class="infoTd">9,999</td>
-                <td class="infoTd">999</td>
-                <td class="infoTd">99,999</td>
-                <td class="infoTd">9</td>
-                <td class="infoTd">99</td>
-                <td class="infoTd">999,999</td>
-                <td class="infoTd" ><a href="#" target="blank"><img src="/img/view.png"></a></td>
-            </tr>-->
 	    </table>
-	    <div class="pageNum">
-            <a href="#" ><<</a>
-            <a href="#" ><</a>
-            <a href="#" >1</a>
-            <a href="#" >2</a>
-            <a href="#" >3</a>
-            <a href="#" >4</a>
-            <a href="#" >5</a>
-            <a href="#" >6</a>
-            <a href="#" >7</a>
-            <a href="#" >8</a>
-            <a href="#" >9</a>
-            <a href="#" >10</a>
-            <a href="#" >></a>
-            <a href="#" >>></a>
-        </div>
     </div>
+    
+    <div id="pageDiv" class="pageNum" style="display: block; text-align: center;">			
+	</div>
 
 <div id="crtfcKey"></div>
 
@@ -127,7 +112,9 @@ function getSearchCrtfc(){
 	$.ajax({
 		type: 'POST',
 		url: '/stock/getSearchCrtfc',
-		data: {},
+		data: {"cntPerPage": $("#cntPerPage").val(),
+				"nowPage": $("#nowPage").val(),
+				"search": $("#search").val()},
 		dataType: 'JSON',
 		success: function(data)
 		{			
@@ -149,6 +136,26 @@ function getSearchCrtfc(){
 				}
 				
 				$("#tbody").html(tbody);
+				
+				
+				//페이징 처리	            
+	            var htm = "";
+	            if(data.paging.startPage != 1){
+	            	htm += "<a href='#' onClick='selChange(" + (data.paging.startPage-1) + ")'><</a>";
+	            }
+	            for(var i=data.paging.startPage; i<=data.paging.endPage; i++){
+	            	if(i == data.paging.nowPage){
+	            		htm += "<b>" + i + "</b>";
+	            	} else {
+	            		htm += "<a href='#' onClick='selChange(" + i + ")'>" + i + "</a>";
+	            	}
+	            }
+	            if(data.paging.endPage != data.paging.lastPage){
+	            	htm += "<a href='#' onClick='selChange(" + (data.paging.endPage+1) + ")'>></a>";
+	            }
+	            
+	            $("#pageDiv").html(htm);
+	            
 			} else {
 				alert("데이터를 가져올 수 없습니다");
 			}
@@ -186,5 +193,17 @@ function getCrtApi(){
 	        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+data);
 	    }
 	});
+}
+
+function enterkey() {
+	if (window.event.keyCode == 13) {
+    	getSearchCrtfc()
+    }
+}
+
+function selChange(nowPage){
+	$("#nowPage").val(nowPage);
+	
+	getSearchCrtfc();
 }
 </script>
